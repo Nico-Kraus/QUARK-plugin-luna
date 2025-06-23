@@ -1,6 +1,6 @@
 from quark.plugin_manager import factory
 
-from PLUGIN_NAME_FORMATTED.example_module import ExampleModule
+from Luna.LunaSA import LUNASA
 
 def register() -> None:
     """
@@ -10,4 +10,4 @@ def register() -> None:
 
     The "module_name" will later be used to refer to the module in the configuration file.
     """
-    factory.register("example_module", ExampleModule)
+    factory.register("luna_sa", LUNASA)
