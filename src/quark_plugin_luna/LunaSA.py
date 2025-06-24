@@ -51,7 +51,7 @@ class LUNASA(Core):
     @override
     def preprocess(self, data: Qubo) -> Result:
 
-        LunaSolve.authenticate("0f9c553393004989b395b546fa64882c")
+        LunaSolve.authenticate("")
         ls = LunaSolve()
 
         bqm = converter_model(data._q)
