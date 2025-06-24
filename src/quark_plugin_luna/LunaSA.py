@@ -1,19 +1,16 @@
 import dimod
 
-
 import numpy as np
 
 from typing import override
 from dataclasses import dataclass
 
-import dwave.samplers
 from quark.core import Core, Data, Result
 from quark.interface_types import Other, Qubo
 
 from luna_quantum import LunaSolve
 from luna_quantum.translator import BqmTranslator
 from luna_quantum.solve.parameters.algorithms import SimulatedAnnealing
-
 
 def converter_model(data):
     bqm = dimod.BinaryQuadraticModel('BINARY')
@@ -36,6 +33,7 @@ def converter_solution(best_sample, var_names):
         # Index extrahieren: 'v2_3' -> (2, 3)
         i, j = map(int, var[1:].split('_'))
         solution_dict[(i, j)] = np.int8(val)
+        # solution_dict[var] = val
 
     return solution_dict
 
@@ -53,7 +51,7 @@ class LUNASA(Core):
     @override
     def preprocess(self, data: Qubo) -> Result:
 
-        LunaSolve.authenticate("apikey")
+        LunaSolve.authenticate("0f9c553393004989b395b546fa64882c")
         ls = LunaSolve()
 
         bqm = converter_model(data._q)
@@ -62,7 +60,7 @@ class LUNASA(Core):
 
         algorithm = SimulatedAnnealing(
             backend=None,
-            num_reads=1000,
+            num_reads=self.num_reads,
             num_sweeps=1000,
             beta_range=None,
             beta_schedule_type='geometric',
@@ -78,6 +76,7 @@ class LUNASA(Core):
         job = algorithm.run(model)
 
         solution = job.result()
+        self.runtime = solution.runtime
 
         objective_values = solution.obj_values
         best_index = np.argmin(objective_values)
@@ -90,6 +89,10 @@ class LUNASA(Core):
         self._result = best_solution
 
         return Data(None)
+    
+    @override
+    def get_metrics(self):
+        return {"runtime": 0}
 
     @override
     def postprocess(self, data: Data) -> Result:
