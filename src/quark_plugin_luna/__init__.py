@@ -1,6 +1,6 @@
 from quark.plugin_manager import factory
 
-from quark_plugin_luna.LunaSA import LUNASA
+from .LunaSA import LUNASA
 
 def register() -> None:
     """

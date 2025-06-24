@@ -1,0 +1,1 @@
+from .src.quark_plugin_luna import register
