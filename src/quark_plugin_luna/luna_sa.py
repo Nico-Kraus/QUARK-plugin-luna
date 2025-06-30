@@ -13,6 +13,9 @@ from luna_quantum.translator import BqmTranslator
 from luna_quantum.solve.parameters.algorithms import SimulatedAnnealing
 
 def converter_model(data):
+    """
+    Converts a QUBO problem represented as a dictionary into a Binary Quadratic Model (BQM).
+    """
     bqm = dimod.BinaryQuadraticModel('BINARY')
 
     for (index1, index2), value in data.items():
@@ -27,13 +30,15 @@ def converter_model(data):
     return bqm
 
 def converter_solution(best_sample, var_names):
+    """
+    Converts the best sample from the simulated annealing solution into a dictionary format.
+    """
     solution_dict = {}
 
     for var, val in zip(var_names, best_sample):
-        # Index extrahieren: 'v2_3' -> (2, 3)
+        # Extract index: 'v2_3' -> (2, 3)
         i, j = map(int, var[1:].split('_'))
         solution_dict[(i, j)] = np.int8(val)
-        # solution_dict[var] = val
 
     return solution_dict
 
@@ -41,7 +46,7 @@ def converter_solution(best_sample, var_names):
 @dataclass
 class LUNASA(Core):
     """
-    A module for solving a qubo problem using simulated annealing
+    A module for solving a qubo problem using simulated annealing.
 
     :param num_reads: The number of reads to perform
     """
@@ -50,6 +55,9 @@ class LUNASA(Core):
 
     @override
     def preprocess(self, data: Qubo) -> Result:
+        """
+        This method preprocesses the input data (QUBO) for the simulated annealing module.
+        """
 
         LunaSolve.authenticate("")
         ls = LunaSolve()
@@ -92,7 +100,7 @@ class LUNASA(Core):
     
     @override
     def get_metrics(self):
-        return {"runtime": 0}
+        return {"runtime": self.runtime}
 
     @override
     def postprocess(self, data: Data) -> Result:

@@ -6,11 +6,15 @@ build-backend = "setuptools.build_meta"
 # can be empty if no extra settings are needed, presence enables setuptools-scm
 
 [project.urls]
-Homepage = "PLUGIN_HOMEPAGE"
+Homepage = "https://github.com/Nico-Kraus/QUARK-plugin-luna"
 
 [project]
-name = "PLUGIN_NAME"
+name = "QUARK-plugin-luna"
 dynamic = ["version"]
+authors =[
+    { name = "Nico Kraus", email = "nico.kraus@aqarios.de"}
+]
+description = "QUARK plugin that provides interface to AQARIOS' Luna framework"
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
@@ -18,4 +22,4 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 license = { text = "Apache-2.0" }
-dependencies = ["quark-framework>=0.1.9", "luna-quantum==1.0.0"]
+dependencies = ["quark-framework>=0.1.9", "luna-quantum==1.0.0", "numpy>=2.2.3", "dimod>=0.12.0"]
