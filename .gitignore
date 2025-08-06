@@ -5,7 +5,7 @@ uv.lock
 *.pkl
 *.png
 # === Custom files ===
-
+test/
 
 
 # Byte-compiled / optimized / DLL files
