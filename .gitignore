@@ -6,7 +6,7 @@ uv.lock
 *.png
 # === Custom files ===
 test/
-
+credentials.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

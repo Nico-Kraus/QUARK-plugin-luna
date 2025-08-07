@@ -34,18 +34,23 @@ class LunaSetPacking(Core):
 
     @override
     def postprocess(self, data: InterfaceType) -> Result:
-        solution = data.data
-        if solution is None:
+            
+        lp_solution = data.data.data
+        if lp_solution is None:
             return Failed("No solution found")
         
-        for row in self.subset_matrix:
-            total = sum(sol * val for sol, val in zip(solution, row))
-        if total > 1:
-            return Failed("Invalid Solution")
+        solution = []
+        for i in range(len(self.subset_weights)):
+            val = lp_solution.get(f"x_{i}", 0.0)
+            solution.append(1 if val >= 0.5 else 0) 
 
-    
-        obj_val = sum(w * x for w, x in zip(self.subset_weights, solution))
-        return Data(Other(obj_val))
+        for row in self.subset_matrix:
+            total = sum(x * val for x, val in zip(solution, row))
+            if total > 1:
+                return Failed("Invalid solution.")
+            
+        obj_value = sum(w * x for w, x in zip(self.subset_weights, solution))
+        return Data(Other(obj_value))
 
     
 
