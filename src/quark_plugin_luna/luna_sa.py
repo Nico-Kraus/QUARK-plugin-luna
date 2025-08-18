@@ -1,9 +1,6 @@
-import dimod
-
-import numpy as np
-
 from typing import override
 from dataclasses import dataclass
+import numpy as np
 
 from quark.core import Core, Data, Result
 from quark.interface_types import Other, Qubo
@@ -12,35 +9,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.translator import BqmTranslator
 from luna_quantum.solve.parameters.algorithms import SimulatedAnnealing
 
-def converter_model(data):
-    """
-    Converts a QUBO problem represented as a dictionary into a Binary Quadratic Model (BQM).
-    """
-    bqm = dimod.BinaryQuadraticModel('BINARY')
-
-    for (index1, index2), value in data.items():
-        var1 = f"v{index1[0]}_{index1[1]}"
-        var2 = f"v{index2[0]}_{index2[1]}"
-        
-        if var1 == var2:
-            bqm.add_variable(var1, value)
-        else:
-            bqm.add_interaction(var1, var2, value)
-
-    return bqm
-
-def converter_solution(best_sample, var_names):
-    """
-    Converts the best sample from the simulated annealing solution into a dictionary format.
-    """
-    solution_dict = {}
-
-    for var, val in zip(var_names, best_sample):
-        # Extract index: 'v2_3' -> (2, 3)
-        i, j = map(int, var[1:].split('_'))
-        solution_dict[(i, j)] = np.int8(val)
-
-    return solution_dict
+from .utils import converter_solution, converter_model, get_runtime
 
 
 @dataclass
@@ -48,53 +17,65 @@ class LUNASA(Core):
     """
     A module for solving a qubo problem using simulated annealing.
 
-    :param num_reads: The number of reads to perform
+    :param num_reads: Number of independent runs; increases chance to find global optimum.
+    :param backend: Backend to use for computation.
+    :param num_sweeps: Number of variable sweeps per run (default: 1000).
+    :param beta_range: [start, end] range for inverse temperature β (default: auto).
+    :param beta_schedule_type: "linear" or "geometric" schedule for β (default: "geometric").
+    :param initial_states_generator: How to fill missing initial states ("none", "tile", "random").
+    :param num_sweeps_per_beta: Sweeps per temperature step (default: 1).
+    :param seed: Random seed for reproducibility (default: None).
+    :param beta_schedule: Explicit sequence of β values (overrides beta_range/type).
+    :param initial_states: One or more predefined starting states (default: None).
+    :param randomize_order: Whether to randomize variable update order (default: False).
+    :param proposal_acceptance_criteria: "Gibbs" or "Metropolis" rule for accepting moves (default: "Metropolis").
     """
 
     num_reads: int = 100
+    backend=None
+    num_sweeps=1000
+    beta_range=None
+    beta_schedule_type='geometric'
+    initial_states_generator='random'
+    num_sweeps_per_beta=1
+    seed=None
+    beta_schedule=None
+    initial_states=None
+    randomize_order=False
+    proposal_acceptance_criteria='Metropolis'
+    
 
     @override
     def preprocess(self, data: Qubo) -> Result:
         """
-        This method preprocesses the input data (QUBO) for the simulated annealing module.
+        This method preprocesses the input data (QUBO) for the LUNA simulated annealing module.
         """
 
         LunaSolve.authenticate("")
         ls = LunaSolve()
-
         bqm = converter_model(data._q)
-
         model = BqmTranslator.to_aq(bqm, name="bqm")
-
         algorithm = SimulatedAnnealing(
-            backend=None,
+            backend=self.backend,
             num_reads=self.num_reads,
-            num_sweeps=1000,
-            beta_range=None,
-            beta_schedule_type='geometric',
-            initial_states_generator='random',
-            num_sweeps_per_beta=1,
-            seed=None,
-            beta_schedule=None,
-            initial_states=None,
-            randomize_order=False,
-            proposal_acceptance_criteria='Metropolis'
+            num_sweeps=self.num_sweeps,
+            beta_range=self.beta_range,
+            beta_schedule_type=self.beta_schedule_type,
+            initial_states_generator=self.initial_states_generator,
+            num_sweeps_per_beta=self.num_sweeps_per_beta,
+            seed=self.seed,
+            beta_schedule=self.beta_schedule,
+            initial_states=self.initial_states,
+            randomize_order=self.randomize_order,
+            proposal_acceptance_criteria=self.proposal_acceptance_criteria
         )
 
-        job = algorithm.run(model)
+        job = algorithm.run(model)      
 
         solution = job.result()
-        self.runtime = solution.runtime
 
-        objective_values = solution.obj_values
-        best_index = np.argmin(objective_values)
-
-        best_sample = solution.samples.tolist()[best_index]
-        var_names = solution.variable_names
-
-        best_solution = converter_solution(best_sample, var_names)
-
-        self._result = best_solution
+        self.runtime = get_runtime(solution)
+        self._result = converter_solution(solution)
 
         return Data(None)
     
@@ -103,6 +84,6 @@ class LUNASA(Core):
         return {"runtime": self.runtime}
 
     @override
-    def postprocess(self, data: Data) -> Result:
+    def postprocess(self, data: Data = None) -> Result:
         result = Data(Other(self._result))
         return result
