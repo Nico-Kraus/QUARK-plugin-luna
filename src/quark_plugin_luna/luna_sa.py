@@ -1,6 +1,5 @@
 from typing import override
 from dataclasses import dataclass
-import numpy as np
 
 from quark.core import Core, Data, Result
 from quark.interface_types import Other, Qubo

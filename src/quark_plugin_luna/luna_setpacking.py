@@ -8,7 +8,6 @@ from luna_quantum.solve.use_cases import SetPacking
 from luna_quantum import Model, LunaSolve
 from luna_quantum.translator import LpTranslator
 
-import numpy as np
 import random
 
 @dataclass
