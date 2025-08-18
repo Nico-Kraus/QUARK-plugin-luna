@@ -1,7 +1,6 @@
-import numpy as np
-
 from typing import override
 from dataclasses import dataclass
+import numpy as np
 
 from quark.core import Core, Data, Result
 from quark.interface_types import Other, Qubo
@@ -10,7 +9,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.translator import BqmTranslator
 from luna_quantum.solve.parameters.algorithms import SimulatedAnnealing
 
-from .utils import converter_solution, converter_model
+from .utils import converter_solution, converter_model, get_runtime
 
 
 @dataclass
@@ -54,9 +53,9 @@ class LUNASA(Core):
 
         LunaSolve.authenticate("")
         ls = LunaSolve()
-
+        print("data", data._q)
         bqm = converter_model(data._q)
-
+        print("bqm", bqm)
         model = BqmTranslator.to_aq(bqm, name="bqm")
         algorithm = SimulatedAnnealing(
             backend=self.backend,
@@ -76,10 +75,9 @@ class LUNASA(Core):
         job = algorithm.run(model)      
 
         solution = job.result()
-        best_solution = converter_solution(solution)
 
-        self.runtime = (solution.runtime.end - solution.runtime.start).total_seconds()
-        self._result = best_solution
+        self.runtime = get_runtime(solution)
+        self._result = converter_solution(solution)
 
         return Data(None)
     

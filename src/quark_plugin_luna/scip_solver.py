@@ -1,7 +1,8 @@
 from pyscipopt import Model
-import io
+import os
 from typing import override
 from dataclasses import dataclass
+import tempfile
 
 from quark.core import Core, Data, Result
 from quark.interface_types import Other
@@ -12,17 +13,24 @@ from quark.interface_types import Other
 class ScipSolver(Core):
     
     @override
-    def preprocess(self, data: Other) -> Result:
-        
-        lp_string = data.data.data
-        model = Model()
-        model.readProblem(io.StringIO(lp_string), "lp")
+    def preprocess(self, data):
+        lp_string = data.data
 
-        model.optimize()
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.lp', delete=False) as tmpfile:
+            tmpfile.write(lp_string)
+            tmpfile.flush()
+            tmpfile_name = tmpfile.name
 
-        self.status = model.getStatus()
-        self.solution = model.getBestSol()
-        self.runtime = model.getSolvingTime()
+        try:
+            model = Model()
+            model.readProblem(tmpfile_name)
+            model.optimize()
+
+            self.status = model.getStatus()
+            self.solution = {var.name: model.getSolVal(model.getBestSol(), var) for var in model.getVars()}
+            self.runtime = model.getSolvingTime()
+        finally:
+            os.remove(tmpfile_name)
 
         return Data(None)
     

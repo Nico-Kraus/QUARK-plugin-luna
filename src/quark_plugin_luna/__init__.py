@@ -3,9 +3,11 @@ from quark.plugin_manager import factory
 from .luna_sa import LUNASA
 from .luna_setpacking import LunaSetPacking
 from .scip_solver import ScipSolver
+from .lp_qubo_mapping import LunaLpQuboMapping
 
 def register() -> None:
 
     factory.register("luna_sa", LUNASA)
     factory.register("luna_setpacking", LunaSetPacking)
     factory.register("scip_solver", ScipSolver)
+    factory.register("luna_lp_qubo_mapping", LunaLpQuboMapping)

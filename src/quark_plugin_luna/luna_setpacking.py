@@ -8,22 +8,49 @@ from luna_quantum.solve.use_cases import SetPacking
 from luna_quantum import Model, LunaSolve
 from luna_quantum.translator import LpTranslator
 
+import numpy as np
+import random
+
 @dataclass
 class LunaSetPacking(Core):
-    
+    """A module for creating a Set Packing instance from LUNA.
 
-    subset_matrix = [[1, 1, 0, 0, 0],
-                    [0, 1, 1, 0, 0],
-                    [0, 0, 1, 1, 0],
-                    [0, 0, 0, 1, 1],
-                    [1, 0, 0, 0, 1],
-                    [0, 1, 0, 1, 0],
-                    [0, 0, 1, 0, 1]]
+    :param subset_matrix: The number of nodes in the graph
+    :param subset_weights: The seed for the random number generator
+    """   
 
-    subset_weights = [1, 1, 1, 1, 1, 1, 1]
+    set_size : int = 5
+    universe_size : int = 7
+    density : float = 0.4
+    weights : str = "equal"
+    seed : int = 123
+
+    def generate_set_picking(self, set_size, universe_size, density, weights, seed):
+        
+        if seed is not None:
+            random.seed(seed)
+        subset_matrix = []
+        for _ in range(set_size):
+            row = [1 if random.random() < density else 0 for _ in range(universe_size)]
+            # ensure at least one element per subset
+            if sum(row) == 0:
+                row[random.randint(0, universe_size-1)] = 1
+            subset_matrix.append(row)
+
+        if weights == "equal":
+            subset_weights = [1] * set_size
+        elif weights == "random":
+            subset_weights = [random.randint(1, 10) for _ in range(set_size)]
+        else:
+            raise ValueError(f"weights must be 'equal' or 'random', and not {weights}")
+
+        self.subset_matrix = subset_matrix
+        self.subset_weights = subset_weights
 
     @override
-    def preprocess(self, data: InterfaceType) -> Result:
+    def preprocess(self, data: InterfaceType = None) -> Result:
+        self.generate_set_picking(self.set_size, self.universe_size, self.density, self.weights, self.seed)
+        
         ls = LunaSolve()
 
         set_packing = SetPacking(subset_matrix=self.subset_matrix, weights=self.subset_weights)
@@ -35,7 +62,7 @@ class LunaSetPacking(Core):
     @override
     def postprocess(self, data: InterfaceType) -> Result:
             
-        lp_solution = data.data.data
+        lp_solution = data.data
         if lp_solution is None:
             return Failed("No solution found")
         
