@@ -53,9 +53,7 @@ class LUNASA(Core):
 
         LunaSolve.authenticate("")
         ls = LunaSolve()
-        print("data", data._q)
         bqm = converter_model(data._q)
-        print("bqm", bqm)
         model = BqmTranslator.to_aq(bqm, name="bqm")
         algorithm = SimulatedAnnealing(
             backend=self.backend,

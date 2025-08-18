@@ -14,10 +14,15 @@ import random
 @dataclass
 class LunaSetPacking(Core):
     """A module for creating a Set Packing instance from LUNA.
+    Upstream: Set Picking instance as LP string
+    Downstream: Objective value of the solution
 
-    :param subset_matrix: The number of nodes in the graph
-    :param subset_weights: The seed for the random number generator
-    """   
+    :param set_size: The number of subsets to generate (default: 5)
+    :param universe_size: The size of the universe (number of elements) (default: 7)
+    :param density: The probability of each element being included in a subset (default: 0.4)
+    :param weights: Weight assignment strategy - "equal" for uniform weights or "random" for random weights (default: "equal")
+    :param seed: The seed for the random number generator for reproducible results (default: 123)
+    """    
 
     set_size : int = 5
     universe_size : int = 7
