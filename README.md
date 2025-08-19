@@ -3,7 +3,9 @@
 ### Provided Modules:
 
 Luna Usecases provide an LP string, solveable directly by the scip solver or 
-transformable to qubo by the `lp_qubo_maping` module
+transformable to qubo by the `lp_qubo_maping` module.
+This transformation will however encode constraints as slack variables.
+Constraint conserving algorithms are `scip_solver` and `luna_flex` 
 
  <br>
 
@@ -11,8 +13,12 @@ transformable to qubo by the `lp_qubo_maping` module
 | Module               | Upstream Interface          | Downstream Interface       |
 |----------------------| --------------------------- |----------------------------|
 | luna_sa              | quark.interface_types.qubo  | None                       |
+| luna_saga              | quark.interface_types.qubo  | None                       |
 | luna_qa              | quark.interface_types.qubo  | None                       |
-| scip_solver          | quark.interface_types.other (LP) | None                       |
+| scip_solver          | quark.interface_types.other (LP) | None                  |
+| luna_pt              | quark.interface_types.qubo  | None                       |
+| luna_qaoa            | quark.interface_types.qubo  | None                       |
+| luna_flex            | quark.interface_types.other (LP) | None                  |
 
 <br>
 

@@ -13,7 +13,7 @@ from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import ParallelTempering
 
 
-from .utils import converter_solution, converter_model
+from .utils import converter_solution, converter_model, get_runtime
 
 @dataclass
 class LUNAPT(Core):
@@ -76,7 +76,7 @@ class LUNAPT(Core):
         solution = job.result()
         best_solution = converter_solution(solution)
 
-        self.runtime = (solution.runtime.end - solution.runtime.start).total_seconds()
+        self.runtime = get_runtime(solution)
         self._result = best_solution
 
         return Data(None)
