@@ -13,12 +13,15 @@ Constraint conserving algorithms are `scip_solver` and `luna_flex`
 | Module               | Upstream Interface          | Downstream Interface       |
 |----------------------| --------------------------- |----------------------------|
 | luna_sa              | quark.interface_types.qubo  | None                       |
-| luna_saga              | quark.interface_types.qubo  | None                       |
+| luna_saga            | quark.interface_types.qubo  | None                       |
 | luna_qa              | quark.interface_types.qubo  | None                       |
 | scip_solver          | quark.interface_types.other (LP) | None                  |
 | luna_pt              | quark.interface_types.qubo  | None                       |
 | luna_qaoa            | quark.interface_types.qubo  | None                       |
-| luna_flex            | quark.interface_types.other (LP) | None                  |
+| luna_flex_qaoa       | quark.interface_types.other (LP) | None                  |
+| luna_qbsolv_sa       | quark.interface_types.qubo  | None                       |
+| luna_rrsa            | quark.interface_types.qubo  | None                       |
+| luna_pa              | quark.interface_types.qubo  | None                       |
 
 <br>
 

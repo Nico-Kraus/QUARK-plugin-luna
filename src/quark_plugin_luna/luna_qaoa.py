@@ -16,7 +16,7 @@ from .utils import converter_solution, converter_model, get_runtime, get_luna_ap
 
 
 @dataclass
-class LUNAQA0A(Core):
+class LUNAQAOA(Core):
     """
     A module for solving a QUBO problem using the Quantum Approximate Optimization Algorithm (QAOA).
     
