@@ -58,7 +58,7 @@ class LUNAQA(Core):
         Preprocesses QUBO data for the LUNA quantum annealing module.
         """
 
-        LunaSolve.authenticate("")
+        LunaSolve.authenticate(get_luna_api_key())
         ls = LunaSolve()
 
         bqm = converter_model(data._q)

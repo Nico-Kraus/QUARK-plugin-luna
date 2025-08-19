@@ -12,7 +12,7 @@ from luna_quantum.solve.parameters.algorithms.base_params import (
     ScipyOptimizerParams
 )
 
-from .utils import converter_solution, converter_model, get_runtime
+from .utils import converter_solution, converter_model, get_runtime, get_luna_api_key
 
 
 @dataclass
@@ -59,8 +59,8 @@ class LUNAQA0A(Core):
         This method preprocesses the input data (QUBO) for the LUNA QAOA module.
         """
 
-        LunaSolve.authenticate("")
-        ls = LunaSolve()
+        LunaSolve.authenticate(get_luna_api_key())
+        _ = LunaSolve()
         bqm = converter_model(data._q)
         model = BqmTranslator.to_aq(bqm, name="bqm")
         

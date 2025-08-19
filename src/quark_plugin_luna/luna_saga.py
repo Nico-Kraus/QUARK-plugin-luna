@@ -8,7 +8,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import SAGA
 
-from .utils import converter_solution, converter_model, get_runtime
+from .utils import converter_solution, converter_model, get_runtime, get_luna_api_key
 
 
 @dataclass
@@ -71,7 +71,7 @@ class LUNASAGA(Core):
         This method preprocesses the input data (QUBO) for the LUNA SAGA module.
         """
 
-        LunaSolve.authenticate("")
+        LunaSolve.authenticate(get_luna_api_key())
         ls = LunaSolve()
         bqm = converter_model(data._q)
         model = BqmTranslator.to_aq(bqm, name="bqm")

@@ -2,7 +2,7 @@ from typing import override
 from dataclasses import dataclass
 
 from quark.core import Core, Data, Result
-from quark.interface_types import Other, Qubo
+from quark.interface_types import Other
 
 from luna_quantum import LunaSolve
 from luna_quantum.translator import LpTranslator
@@ -20,6 +20,7 @@ from luna_quantum.solve.parameters.algorithms.quantum_gate.flex_qaoa import (
     QuadraticPenaltyParams
 )
 
+from .utils import get_luna_api_key
 
 @dataclass
 class LUNAFlexQaoa(Core):
@@ -81,8 +82,8 @@ class LUNAFlexQaoa(Core):
         Preprocesses QUBO data for the LUNA quantum annealing module.
         """
 
-        LunaSolve.authenticate("")
-        ls = LunaSolve()
+        LunaSolve.authenticate(get_luna_api_key())
+        _ = LunaSolve()
 
         model = LpTranslator.to_aq(data.data)
 

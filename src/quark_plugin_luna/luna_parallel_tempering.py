@@ -13,8 +13,7 @@ from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import ParallelTempering
 
 
-from .utils import converter_solution, converter_model, get_runtime
-
+from .utils import get_luna_api_key, converter_solution, converter_model, get_runtime
 @dataclass
 class LUNAPT(Core):
     """
@@ -51,8 +50,8 @@ class LUNAPT(Core):
         Preprocesses QUBO data for the LUNA quantum annealing module.
         """
 
-        LunaSolve.authenticate("")
-        ls = LunaSolve()
+        LunaSolve.authenticate(get_luna_api_key())
+        _ = LunaSolve()
 
         bqm = converter_model(data._q)
         model = BqmTranslator.to_aq(bqm, name="bqm")

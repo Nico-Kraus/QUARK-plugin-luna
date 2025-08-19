@@ -50,7 +50,7 @@ class LUNASA(Core):
         This method preprocesses the input data (QUBO) for the LUNA simulated annealing module.
         """
 
-        LunaSolve.authenticate("")
+        LunaSolve.authenticate(get_luna_api_key())
         ls = LunaSolve()
         bqm = converter_model(data._q)
         model = BqmTranslator.to_aq(bqm, name="bqm")

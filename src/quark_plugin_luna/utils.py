@@ -1,5 +1,8 @@
 import dimod
 import numpy as np
+import os
+import yaml
+from pathlib import Path
 
 def converter_model(data):
     sample_key = next(iter(data))
@@ -41,6 +44,23 @@ def converter_solution(solution):
 
 def get_runtime(solution):
     return (solution.runtime.end - solution.runtime.start).total_seconds()
+
+def get_luna_api_key() -> str:
+    key = os.getenv("LUNA_API_KEY")
+    if key:
+        return key
+
+    cred_file = Path("credentials.yaml")
+    if cred_file.exists():
+        with open(cred_file, "r") as f:
+            creds = yaml.safe_load(f)
+        if "LUNA_API_KEY" in creds and creds["LUNA_API_KEY"]:
+            return creds["LUNA_API_KEY"]
+
+    raise RuntimeError(
+        "LUNA_API_KEY not found. Please set it as an environment variable "
+        "or provide it in credentials.yaml"
+    )
 
 # def matrix_to_qubo_dict(matrix: np.ndarray) -> dict:
 #     qubo = {}
