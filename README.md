@@ -10,18 +10,24 @@ Constraint conserving algorithms are `scip_solver` and `luna_flex`
  <br>
 
 **Solving Algortihms**
-| Module               | Upstream Interface          | Downstream Interface       |
-|----------------------| --------------------------- |----------------------------|
-| luna_sa              | quark.interface_types.qubo  | None                       |
-| luna_saga            | quark.interface_types.qubo  | None                       |
-| luna_qa              | quark.interface_types.qubo  | None                       |
-| scip_solver          | quark.interface_types.other (LP) | None                  |
-| luna_pt              | quark.interface_types.qubo  | None                       |
-| luna_qaoa            | quark.interface_types.qubo  | None                       |
-| luna_flex_qaoa       | quark.interface_types.other (LP) | None                  |
-| luna_qbsolv_sa       | quark.interface_types.qubo  | None                       |
-| luna_rrsa            | quark.interface_types.qubo  | None                       |
-| luna_pa              | quark.interface_types.qubo  | None                       |
+| Module               | Upstream Interface          | Downstream Interface       | Type
+|----------------------|----------------------------|----------------------------|----------------------------|
+| luna_qa              | quark.interface_types.qubo | None                       | Quantum
+| luna_qaoa            | quark.interface_types.qubo | None                       | Quantum
+| luna_qaga            | quark.interface_types.qubo | None                       | Quantum
+| luna_qbqa            | quark.interface_types.qubo | None                       | Quantum
+| luna_qpa             | quark.interface_types.qubo | None                       | Quantum
+| luna_rrqa            | quark.interface_types.qubo | None                       | Quantum
+| luna_leapbqm         | quark.interface_types.qubo | None                       | Hybrid
+| luna_sa              | quark.interface_types.qubo | None                       | Classical
+| luna_saga            | quark.interface_types.qubo | None                       | Classical
+| luna_qbsa            | quark.interface_types.qubo | None                       | Classical
+| luna_rrsa            | quark.interface_types.qubo | None                       | Classical
+| luna_pa              | quark.interface_types.qubo | None                       | Classical
+| luna_kerb            | quark.interface_types.qubo | None                       | Classical
+| luna_flex_qaoa       | quark.interface_types.other (LP) | None                  | Quantum
+| luna_leapcqm         | quark.interface_types.other (LP) | None                  | Hybrid
+| scip_solver          | quark.interface_types.other (LP) | None                  | Classical
 
 <br>
 
