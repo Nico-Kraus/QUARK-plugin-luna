@@ -13,7 +13,7 @@ from .utils import converter_solution, converter_model, get_runtime, get_luna_ap
 
 
 @dataclass
-class LUNAQBSolv(Core):
+class LUNAQBSA(Core):
     decomposer_size: int = 50
     rolling: bool = True
     rolling_history: float = 0.15

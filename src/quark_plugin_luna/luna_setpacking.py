@@ -10,6 +10,8 @@ from luna_quantum.translator import LpTranslator
 
 import random
 
+from .utils import get_luna_api_key
+
 @dataclass
 class LunaSetPacking(Core):
     """A module for creating a Set Packing instance from LUNA.
@@ -54,7 +56,7 @@ class LunaSetPacking(Core):
     @override
     def preprocess(self, data: InterfaceType = None) -> Result:
         self.generate_set_picking(self.set_size, self.universe_size, self.density, self.weights, self.seed)
-        
+        LunaSolve.authenticate(get_luna_api_key())
         ls = LunaSolve()
 
         set_packing = SetPacking(subset_matrix=self.subset_matrix, weights=self.subset_weights)

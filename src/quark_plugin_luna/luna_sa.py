@@ -8,7 +8,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.translator import BqmTranslator
 from luna_quantum.solve.parameters.algorithms import SimulatedAnnealing
 
-from .utils import converter_solution, converter_model, get_runtime
+from .utils import converter_solution, converter_model, get_runtime, get_luna_api_key
 
 
 @dataclass

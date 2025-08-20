@@ -1,5 +1,5 @@
 from typing import override
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from quark.core import Core, Data, Result
 from quark.interface_types import Other
@@ -44,36 +44,42 @@ class LUNAFlexQaoa(Core):
 
     shots: int = 1024
     reps: int = 1
-    pipeline: PipelineParams = PipelineParams(
-        indicator_function=IndicatorFunctionParams(
-            penalty=None,
-            penalty_scaling=2
-        ),
-        one_hot=OneHotParams(),
-        quadratic_penalty=QuadraticPenaltyParams(
-            penalty=None
+    pipeline: PipelineParams = field(
+        default_factory=lambda: PipelineParams(
+            indicator_function=IndicatorFunctionParams(
+                penalty=None,
+                penalty_scaling=2
+            ),
+            one_hot=OneHotParams(),
+            quadratic_penalty=QuadraticPenaltyParams(
+                penalty=None
+            )
         )
     )
-    optimizer: ScipyOptimizerParams = ScipyOptimizerParams(
-        method='cobyla',
-        tol=None,
-        bounds=None,
-        jac=None,
-        hess=None,
-        maxiter=100,
-        options={}
+    optimizer: ScipyOptimizerParams = field(
+        default_factory=lambda: ScipyOptimizerParams(
+            method='cobyla',
+            tol=None,
+            bounds=None,
+            jac=None,
+            hess=None,
+            maxiter=100,
+            options={}
+        )
     )
-    qaoa_config: AdvancedConfig = AdvancedConfig(
-        mixer=XYMixer(
-            types=['even', 'odd', 'last']
-        ),
-        parallel_indicators=True,
-        discard_slack=False,
-        infeas_penalty=None
+    qaoa_config: AdvancedConfig = field(
+        default_factory=lambda: AdvancedConfig(
+            mixer=XYMixer(types=['even', 'odd', 'last']),
+            parallel_indicators=True,
+            discard_slack=False,
+            infeas_penalty=None
+        )
     )
-    initial_params: LinearQAOAParams = LinearQAOAParams(
-        delta_beta=0.5,
-        delta_gamma=0.5
+    initial_params: LinearQAOAParams = field(
+        default_factory=lambda: LinearQAOAParams(
+            delta_beta=0.5,
+            delta_gamma=0.5
+        )
     )
 
     @override

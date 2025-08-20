@@ -1,5 +1,5 @@
 from typing import override
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from quark.core import Core, Data, Result
 from quark.interface_types import Other, Qubo
@@ -39,18 +39,22 @@ class LUNAQAOA(Core):
     reps: int = 1
     shots: int = 1024
     backend = None
-    optimizer: ScipyOptimizerParams = ScipyOptimizerParams(
-        method='cobyla',
-        tol=None,
-        bounds=None,
-        jac=None,
-        hess=None,
-        maxiter=100,
-        options={}
+    optimizer: ScipyOptimizerParams = field(
+        default_factory=lambda: ScipyOptimizerParams(
+            method='cobyla',
+            tol=None,
+            bounds=None,
+            jac=None,
+            hess=None,
+            maxiter=100,
+            options={}
+        )
     )
-    initial_params: LinearQAOAParams = LinearQAOAParams(
-        delta_beta=0.5,
-        delta_gamma=0.5
+    initial_params: LinearQAOAParams = field(
+        default_factory=lambda: LinearQAOAParams(
+            delta_beta=0.5,
+            delta_gamma=0.5
+        )
     )
 
     @override

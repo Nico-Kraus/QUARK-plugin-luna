@@ -6,10 +6,10 @@ from .scip_solver import ScipSolver
 from .lp_qubo_mapping import LunaLpQuboMapping
 from .luna_flex_qaoa import LUNAFlexQaoa
 from .luna_qa import LUNAQA
-from .luna_parallel_tempering import LUNAPT
+from .luna_pt import LUNAPT
 from .luna_qaoa import LUNAQAOA
 from .luna_saga import LUNASAGA
-from .luna_qbsolv import LUNAQBSolv
+from .luna_qbsa import LUNAQBSA
 from .luna_rrsa import LUNARRSA
 from .luna_pa import LUNAPopulationAnnealing
 
@@ -24,7 +24,7 @@ def register() -> None:
     factory.register("luna_qaoa", LUNAQAOA)
     factory.register("luna_saga", LUNASAGA)
     factory.register("scip_solver", ScipSolver)
-    factory.register("luna_qbsolv_sa", LUNAQBSolv)
+    factory.register("luna_qbsa", LUNAQBSA)
     factory.register("luna_rrsa", LUNARRSA)
     factory.register("luna_pa", LUNAPopulationAnnealing)
 
