@@ -1,9 +1,7 @@
 from quark.plugin_manager import factory
 
 from .luna_sa import LUNASA
-from .luna_setpacking import LunaSetPacking
 from .scip_solver import ScipSolver
-from .lp_qubo_mapping import LunaLpQuboMapping
 from .luna_flex_qaoa import LUNAFlexQaoa
 from .luna_qa import LUNAQA
 from .luna_pt import LUNAPT
@@ -20,6 +18,13 @@ from .luna_qbqa import LUNAQBSolvLikeQpu
 from .luna_qpa import LUNAPopulationAnnealingQpu
 from .luna_rrqa import LUNARepeatedReverseQuantumAnnealing
 
+from .lp_qubo_mapping import LunaLpQuboMapping
+
+from .luna_setpacking import LunaSetPacking
+from .luna_hamiltoniancycle import LunaHamiltonianCycle
+from .luna_minvertexcover import LunaMinVertexCover
+from .luna_mis import LunaMaxIndependentSet
+from .luna_maxcut import LunaMaxCut
 
 def register() -> None:
 
@@ -47,3 +52,8 @@ def register() -> None:
 
     # usecases
     factory.register("luna_setpacking", LunaSetPacking)
+    factory.register("luna_hamiltoniancycle", LunaHamiltonianCycle)
+    factory.register("luna_minvertexcover", LunaMinVertexCover)
+    factory.register("luna_mis", LunaMaxIndependentSet)
+    factory.register("luna_maxcut", LunaMaxCut)
+

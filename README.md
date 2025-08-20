@@ -4,7 +4,7 @@
 
 Luna Usecases provide an LP string, solveable directly by the scip solver or 
 transformable to qubo by the `lp_qubo_maping` module.
-This transformation will however encode constraints as slack variables.
+This transformation will encode constraints as slack variables.
 Constraint conserving algorithms are `scip_solver` and `luna_flex` 
 
  <br>
@@ -42,3 +42,7 @@ Constraint conserving algorithms are `scip_solver` and `luna_flex`
 | Module               | Upstream Interface          | Downstream Interface       |
 |----------------------| --------------------------- |----------------------------|
 | luna_setpacking      | None                        | quark.interface_types.other (LP)|
+| luna_hamiltoniancycle| None                        | quark.interface_types.other (LP) |
+| luna_minvertexcover  | None                        | quark.interface_types.other (LP) |
+| luna_mis             | None                        | quark.interface_types.other (LP) |
+| luna_maxcut          | None                        | quark.interface_types.other (LP) |
