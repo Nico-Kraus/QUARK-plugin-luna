@@ -4,7 +4,7 @@ from typing import override
 from quark.core import Core, Data, Failed, Result
 from quark.interface_types import InterfaceType, Other
 
-from luna_quantum.solve.use_cases import MinVertexCover
+from luna_quantum.solve.use_cases import MinimumVertexCover as MinVertexCover
 from luna_quantum import Model, LunaSolve
 from luna_quantum.translator import LpTranslator
 

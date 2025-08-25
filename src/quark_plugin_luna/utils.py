@@ -43,7 +43,10 @@ def converter_solution(solution):
 
 
 def get_runtime(solution):
-    return (solution.runtime.end - solution.runtime.start).total_seconds()
+    if solution is not None:
+        return (solution.runtime.end - solution.runtime.start).total_seconds()
+    else:
+        return None
 
 def get_luna_api_key() -> str:
     key = os.getenv("LUNA_API_KEY")
@@ -62,18 +65,9 @@ def get_luna_api_key() -> str:
         "or provide it in credentials.yaml"
     )
 
-# def matrix_to_qubo_dict(matrix: np.ndarray) -> dict:
-#     qubo = {}
-#     rows, cols = matrix.shape
-#     for i in range(rows):
-#         for j in range(cols):
-#             if matrix[i, j] != 0:
-#                 qubo[(i, j)] = float(matrix[i, j])
-#     return qubo
-
-# def convert_solution_qubo_to_lp(solution_dict):
-#     named_solution = {}
-#     for key, val in solution_dict.items():
-#         i = key[0]
-#         named_solution[f'x_{i}'] = float(val)
-#     return named_solution
+def count_logical_qubits(qubo_dict):
+    vars_in_qubo = set()
+    for i, j in qubo_dict.keys():
+        vars_in_qubo.add(i)
+        vars_in_qubo.add(j)
+    return len(vars_in_qubo)
