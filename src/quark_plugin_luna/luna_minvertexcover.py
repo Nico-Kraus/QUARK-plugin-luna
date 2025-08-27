@@ -42,6 +42,16 @@ class LunaMinVertexCover(Core):
         if self.graph.number_of_edges() == 0:
             self.graph.add_edge(0, 1)
 
+    def evaluate_solution(self, solution: dict) -> tuple[int, bool]:
+        cover = {i: 1 if solution.get(f"x_{i}", 0.0) >= 0.5 else 0 for i in self.graph.nodes()}
+        valid = True
+        for (u, v) in self.graph.edges():
+            if cover[u] + cover[v] < 1:
+                valid = False
+                break
+        obj_value = sum(cover.values())
+        return obj_value, valid
+
     @override
     def preprocess(self, data: InterfaceType = None) -> Result:
         self.generate_graph(self.num_nodes, self.edge_prob, self.seed)
@@ -60,14 +70,10 @@ class LunaMinVertexCover(Core):
     def postprocess(self, data: InterfaceType) -> Result:
         lp_solution = data.data
         if lp_solution is None:
-            return Failed("No solution found")
+                return Failed("No solution found")
 
-        cover = {i: 1 if lp_solution.get(f"x_{i}", 0.0) >= 0.5 else 0 for i in self.graph.nodes()}
+        obj_value, valid = self.evaluate_solution(lp_solution)
+        if not valid:
+            return Failed("Invalid solution: edge not covered")
 
-        # validate: every edge covered
-        for (u, v) in self.graph.edges():
-            if cover[u] + cover[v] < 1:
-                return Failed("Invalid solution: edge not covered")
-
-        obj_value = sum(cover.values())
         return Data(Other(obj_value))
