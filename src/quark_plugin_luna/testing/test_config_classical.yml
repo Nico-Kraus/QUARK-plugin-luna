@@ -2,11 +2,11 @@ plugins: ["quark_plugin_tsp", "quark_plugin_dwave", "quark_plugin_luna"]
 
 
 luna_problems: &luna_problems [
-  "luna_setpacking": { set_size: 4, universe_size: 6, density: 0.4, weights: "equal", seed: 123 },
-  "luna_hamiltoniancycle": { num_nodes: 4, edge_prob: 0.6, seed: 42 },
-  "luna_minvertexcover": { num_nodes: 5, edge_prob: 0.5, seed: 42 },
-  "luna_mis": { num_nodes: 5, edge_prob: 0.4, seed: 42 },
-  "luna_maxcut": { num_nodes: 4, edge_prob: 0.5, weight_range: [1, 5], seed: 42 }
+  # "luna_setpacking": { set_size: 4, universe_size: 6, density: 0.4, weights: "equal", seed: 123 },
+  # "luna_hamiltoniancycle": { num_nodes: 4, edge_prob: 0.6, seed: 42 },
+  "luna_minvertexcover": { num_nodes: 5, edge_prob: 0.5, seed: 42 , penalty: 8},
+  # "luna_mis": { num_nodes: 5, edge_prob: 0.4, seed: 42 },
+  # "luna_maxcut": { num_nodes: 4, edge_prob: 0.5, weight_range: [1, 5], seed: 42 }
 ]
 
 tsp_problems: &tsp_problems [
@@ -19,11 +19,12 @@ luna_lp_to_qubo: &luna_lp_to_qubo "luna_lp_qubo_mapping"
 tsp_to_qubo: &tsp_to_qubo "tsp_qubo_mapping_dnx"
 
 luna_classical_qubo: &luna_classical_qubo [
-  "luna_sa": {},
-  "luna_saga": {},
-  "luna_qbsa": {},
-  "luna_rrsa": {},
-  "luna_pa": {},
+  "luna_sa": {num_reads: 5},
+  #"luna_saga": {},
+  #"luna_qbsa": {},
+  #"luna_rrsa": {},
+  # "luna_pa": {},
+  # "luna_pt": {},
 ]
 
 luna_classical_lp: &luna_classical_lp [
@@ -49,9 +50,9 @@ pipeline_tsp_dwave: &pipeline_tsp_dwave [*tsp_problems, *tsp_to_qubo, "simulated
 
 
 pipelines: [
-  *pipeline_luna_direct,
+  # *pipeline_luna_direct,
   *pipeline_luna_via_qubo, 
-  *pipeline_tsp_via_luna,
-  *pipeline_tsp_direct,
-  *pipeline_tsp_dwave
+  # *pipeline_tsp_via_luna,
+  # *pipeline_tsp_direct,
+  # *pipeline_tsp_dwave
 ]

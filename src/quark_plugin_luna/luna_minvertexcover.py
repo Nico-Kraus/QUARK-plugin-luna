@@ -9,6 +9,7 @@ from luna_quantum import Model, LunaSolve
 from luna_quantum.translator import LpTranslator
 
 import random
+import networkx as nx
 
 from .utils import get_luna_api_key
 
@@ -27,30 +28,32 @@ class LunaMinVertexCover(Core):
     num_nodes: int = 6
     edge_prob: float = 0.5
     seed: int = 123
+    penalty: int = 8
 
     def generate_graph(self, num_nodes, edge_prob, seed):
         if seed is not None:
             random.seed(seed)
-        edges = []
+        self.graph = nx.Graph()
+        self.graph.add_nodes_from(range(num_nodes))
         for i in range(num_nodes):
             for j in range(i + 1, num_nodes):
                 if random.random() < edge_prob:
-                    edges.append((i, j))
-        if not edges:
-            # ensure there's at least one edge
-            edges.append((0, 1))
-        self.edges = edges
+                    self.graph.add_edge(i, j)
+        if self.graph.number_of_edges() == 0:
+            self.graph.add_edge(0, 1)
 
     @override
     def preprocess(self, data: InterfaceType = None) -> Result:
         self.generate_graph(self.num_nodes, self.edge_prob, self.seed)
         LunaSolve.authenticate(get_luna_api_key())
         ls = LunaSolve()
-
-        mvc = MinVertexCover(num_nodes=self.num_nodes, edges=self.edges)
+        str_graph = nx.relabel_nodes(self.graph, lambda x: str(x))
+        graph_dict = nx.to_dict_of_dicts(str_graph)
+        mvc = MinVertexCover(graph=graph_dict, P=self.penalty)
         meta_model = ls.model.create_from_use_case(name="MinVertexCover", use_case=mvc)
         model = Model.load_luna(model_id=meta_model.id)
         lp_model = LpTranslator.from_aq(model)
+
         return Data(Other[str](lp_model))
 
     @override
