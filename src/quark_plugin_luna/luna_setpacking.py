@@ -63,15 +63,12 @@ class LunaSetPacking(Core):
         meta_model = ls.model.create_from_use_case(name="Set Packing", use_case=set_packing)
         model = Model.load_luna(model_id=meta_model.id)
         lp_model = LpTranslator.from_aq(model)
-        print(self.subset_matrix)
-        print(lp_model)
         return Data(Other[str](lp_model))
 
     @override
     def postprocess(self, data: InterfaceType) -> Result:
             
         lp_solution = data.data
-        print(lp_solution)
         if lp_solution is None:
             return Failed("No solution found")
         
