@@ -23,6 +23,7 @@ class ScipSolver(Core):
 
         try:
             model = Model()
+            model.setParam('display/verblevel', 0)
             model.readProblem(tmpfile_name)
             model.optimize()
 
