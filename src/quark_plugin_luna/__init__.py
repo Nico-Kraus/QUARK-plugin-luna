@@ -1,7 +1,8 @@
 from quark.plugin_manager import factory
 
 from .luna_sa import LUNASA
-from .scip_solver import ScipSolver
+
+from .luna_scip import LUNASCIP
 from .luna_flex_qaoa import LUNAFlexQaoa
 from .luna_qa import LUNAQA
 from .luna_pt import LUNAPT
@@ -35,7 +36,6 @@ def register() -> None:
     factory.register("luna_pt", LUNAPT)
     factory.register("luna_qaoa", LUNAQAOA)
     factory.register("luna_saga", LUNASAGA)
-    factory.register("scip_solver", ScipSolver)
     factory.register("luna_qbsa", LUNAQBSA)
     factory.register("luna_rrsa", LUNARRSA)
     factory.register("luna_pa", LUNAPopulationAnnealing)
@@ -46,6 +46,7 @@ def register() -> None:
     factory.register("luna_qbqa", LUNAQBSolvLikeQpu)
     factory.register("luna_qpa", LUNAPopulationAnnealingQpu)
     factory.register("luna_rrqa", LUNARepeatedReverseQuantumAnnealing)
+    factory.register("luna_scip", LUNASCIP)
 
     # mappings
     factory.register("luna_lp_qubo_mapping", LunaLpQuboMapping)

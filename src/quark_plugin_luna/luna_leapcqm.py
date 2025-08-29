@@ -8,7 +8,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.translator import LpTranslator
 from luna_quantum.algorithms import LeapHybridCqm
 
-from .utils import get_luna_api_key
+from .utils import scale_sleep, get_luna_api_key
 
 
 @dataclass
@@ -51,7 +51,7 @@ class LUNALeapHybridCqm(Core):
 
         job = algorithm.run(model)      
 
-        solution = job.result()
+        solution = job.result(**scale_sleep(model))
         best_solution = solution.best()
         best_value = best_solution.obj_value
 

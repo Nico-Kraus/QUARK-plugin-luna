@@ -31,7 +31,7 @@ luna_quantum_solvers: &luna_quantum_solvers [
 
 # Classical LP solvers for ground truth
 luna_classical_lp: &luna_classical_lp [
-  "scip_solver"
+  "luna_scip"
 ]
 
 # constraint quantum solver

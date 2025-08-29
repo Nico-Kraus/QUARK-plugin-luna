@@ -31,7 +31,7 @@
 Luna Usecases provide an LP string, solveable directly by the scip solver or 
 transformable to qubo by the `lp_qubo_maping` module.
 This transformation will encode constraints as slack variables.
-Constraint conserving algorithms are `scip_solver`, `luna_leapcqm`, as well as `luna_flex` in a sense where
+Constraint conserving algorithms are `luna_scip`, `luna_leapcqm`, as well as `luna_flex` in a sense where
 constraints are encoded in a limited search space for QAOA.
 
 All module parameters are documented in detail within their respective `.py` files.
@@ -56,7 +56,7 @@ All module parameters are documented in detail within their respective `.py` fil
 | luna_pa              | quark.interface_types.qubo | None                       | Classical
 | luna_flex_qaoa       | quark.interface_types.other (LP) | None                  | Quantum
 | luna_leapcqm         | quark.interface_types.other (LP) | None                  | Hybrid
-| scip_solver          | quark.interface_types.other (LP) | None                  | Classical
+| luna_scip          | quark.interface_types.other (LP) | None                  | Classical
 
 <br>
 

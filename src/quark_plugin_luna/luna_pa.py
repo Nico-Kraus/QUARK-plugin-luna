@@ -8,7 +8,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import PopulationAnnealing
 
-from .utils import converter_solution, converter_model, get_runtime, get_luna_api_key
+from .utils import scale_sleep, converter_solution, converter_model, get_runtime, get_luna_api_key
 
 
 @dataclass
@@ -56,7 +56,7 @@ class LUNAPopulationAnnealing(Core):
 
         job = algorithm.run(model)      
 
-        solution = job.result()
+        solution = job.result(**scale_sleep(model))
 
         self.runtime = get_runtime(solution)
         self._result = converter_solution(solution)

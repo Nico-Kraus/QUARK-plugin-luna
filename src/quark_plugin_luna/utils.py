@@ -1,8 +1,25 @@
 import dimod
 import numpy as np
+import math
 import os
 import yaml
 from pathlib import Path
+
+from luna_quantum import Model
+
+sleep_params = {"sleep_time_increment": 0.1, "sleep_time_initial":  0.1}
+
+def scale_sleep(model: Model):
+    '''Scales the query intervalls to luna according to the number of variables.'''
+    
+    problem_size = len(model.variables())
+    if problem_size <= 0:
+        raise ValueError("problem_size must be > 0")
+    factor = math.ceil(problem_size / 100)
+    sleep_params_copy = sleep_params.copy()
+    for k in sleep_params_copy:
+        sleep_params_copy[k] *= factor
+    return sleep_params_copy
 
 def converter_model(data):
     sample_key = next(iter(data))

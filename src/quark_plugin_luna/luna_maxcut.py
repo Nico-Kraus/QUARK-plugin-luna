@@ -11,7 +11,7 @@ from luna_quantum.translator import LpTranslator
 import random
 import networkx as nx
 
-from .utils import get_luna_api_key
+from .utils import scale_sleep, get_luna_api_key
 
 
 @dataclass
@@ -31,18 +31,29 @@ class LunaMaxCut(Core):
     weight_range: tuple = (1, 10)
     seed: int = 123
 
-    def generate_graph(self, num_nodes, edge_prob, weight_range, seed):
+    def generate_graph(self, num_nodes, edge_prob, weight_range, seed=None):
+        '''Created a spanning tree first and adds edges afterwards, to avoid isolated nodes.'''
         if seed is not None:
             random.seed(seed)
         G = nx.Graph()
         G.add_nodes_from(range(num_nodes))
+        
+        # Step 1: build a random spanning tree (connects all nodes)
+        nodes = list(G.nodes)
+        random.shuffle(nodes)
+        for i in range(1, num_nodes):
+            u = nodes[i]
+            v = random.choice(nodes[:i])
+            w = random.randint(*weight_range)
+            G.add_edge(u, v, weight=w)
+        
+        # Step 2: add random extra edges
         for i in range(num_nodes):
             for j in range(i + 1, num_nodes):
-                if random.random() < edge_prob:
+                if not G.has_edge(i, j) and random.random() < edge_prob:
                     w = random.randint(*weight_range)
                     G.add_edge(i, j, weight=w)
-        if G.number_of_edges() == 0:
-            G.add_edge(0, 1, weight=str(random.randint(*weight_range)))
+        
         self.graph = G
 
     @override
@@ -53,18 +64,15 @@ class LunaMaxCut(Core):
         str_graph = nx.relabel_nodes(self.graph, lambda x: str(x))
         
         graph_dict = nx.to_dict_of_dicts(str_graph)
-        print("STR_GRAPH: ", graph_dict)
         maxcut = MaxCut(graph=graph_dict)
         meta_model = ls.model.create_from_use_case(name="MaxCut", use_case=maxcut)
         model = Model.load_luna(model_id=meta_model.id)
         lp_model = LpTranslator.from_aq(model)
-        print("LP_MODEL: ", lp_model)
         return Data(Other[str](lp_model))
 
     @override
     def postprocess(self, data: InterfaceType) -> Result:
         lp_solution = data.data
-        print("LP_SOLUTION: ", lp_solution)
         if lp_solution is None:
             return Failed("No solution found")
 

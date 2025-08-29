@@ -12,7 +12,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import QuantumAnnealing
 
-from .utils import converter_solution, converter_model, get_runtime, get_luna_api_key
+from .utils import scale_sleep, converter_solution, converter_model, get_runtime, get_luna_api_key
 
 @dataclass
 class LUNAQA(Core):
@@ -85,7 +85,7 @@ class LUNAQA(Core):
 
         job = algorithm.run(model)      
 
-        solution = job.result()
+        solution = job.result(**scale_sleep(model))
         best_solution = converter_solution(solution)
 
         self.runtime = get_runtime(solution)

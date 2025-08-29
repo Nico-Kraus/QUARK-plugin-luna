@@ -13,7 +13,7 @@ from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import ParallelTempering
 
 
-from .utils import get_luna_api_key, converter_solution, converter_model, get_runtime
+from .utils import scale_sleep, get_luna_api_key, converter_solution, converter_model, get_runtime
 @dataclass
 class LUNAPT(Core):
     """
@@ -72,7 +72,7 @@ class LUNAPT(Core):
 
         job = algorithm.run(model)      
 
-        solution = job.result()
+        solution = job.result(**scale_sleep(model))
         best_solution = converter_solution(solution)
 
         self.runtime = get_runtime(solution)

@@ -11,7 +11,7 @@ from luna_quantum.translator import LpTranslator
 import networkx as nx
 import random
 
-from .utils import get_luna_api_key
+from .utils import scale_sleep, get_luna_api_key
 
 
 @dataclass

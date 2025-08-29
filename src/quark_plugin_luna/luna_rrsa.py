@@ -9,7 +9,7 @@ from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import RepeatedReverseSimulatedAnnealing
 from luna_quantum.solve.parameters.algorithms.base_params import SimulatedAnnealingBaseParams
 
-from .utils import converter_solution, converter_model, get_runtime, get_luna_api_key
+from .utils import scale_sleep, converter_solution, converter_model, get_runtime, get_luna_api_key
 
 
 @dataclass
@@ -91,7 +91,7 @@ class LUNARRSA(Core):
         )
 
         job = algorithm.run(model)
-        solution = job.result()
+        solution = job.result(**scale_sleep(model))
 
         self.runtime = get_runtime(solution)
         self._result = converter_solution(solution)

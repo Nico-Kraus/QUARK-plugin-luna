@@ -12,7 +12,7 @@ from luna_quantum.solve.parameters.algorithms.base_params import (
     ScipyOptimizerParams
 )
 
-from .utils import converter_solution, converter_model, get_runtime, get_luna_api_key
+from .utils import scale_sleep, converter_solution, converter_model, get_runtime, get_luna_api_key
 
 
 @dataclass
@@ -78,7 +78,7 @@ class LUNAQAOA(Core):
 
         job = algorithm.run(model)      
 
-        solution = job.result()
+        solution = job.result(**scale_sleep(model))
 
         self.runtime = get_runtime(solution)
         self._result = converter_solution(solution)
