@@ -5,13 +5,13 @@ from quark.core import Core, Data, Failed, Result
 from quark.interface_types import InterfaceType, Other
 
 from luna_quantum.solve.use_cases import HamiltonianCycle
-from luna_quantum import Model, LunaSolve
+from luna_quantum import Model, LunaSolve, Solution
 from luna_quantum.translator import LpTranslator
 
 import networkx as nx
 import random
 
-from .utils import scale_sleep, get_luna_api_key
+from .utils import get_luna_api_key
 
 
 @dataclass
@@ -66,8 +66,8 @@ class LunaHamiltonianCycle(Core):
         str_graph = nx.relabel_nodes(self.graph, lambda x: str(x))
         hc = HamiltonianCycle(graph=nx.to_dict_of_dicts(str_graph))
         meta_model = ls.model.create_from_use_case(name="HamiltonianCycle", use_case=hc)
-        model = Model.load_luna(model_id=meta_model.id)
-        lp_model = LpTranslator.from_aq(model)
+        self.model = Model.load_luna(model_id=meta_model.id)
+        lp_model = LpTranslator.from_aq(self.model)
         return Data(Other[str](lp_model))
 
     @override
@@ -75,8 +75,14 @@ class LunaHamiltonianCycle(Core):
         lp_solution = data.data
         if lp_solution is None:
             return Failed("No solution found")
-        else:
-            return self.evaluate_qubo_hamiltonian_solution(lp_solution)
+        
+        solution = Solution.from_dict(model=self.model, data=data.data)
+        if not solution.best().feasible:
+            return Failed("Invalid solution.")
+        obj_value = abs(solution.best().obj_value)
+        return Data(Other(obj_value))
+        # else:
+        #     return self.evaluate_qubo_hamiltonian_solution(lp_solution)
 
     def evaluate_qubo_hamiltonian_solution(self, lp_solution):
         """

@@ -7,7 +7,7 @@ from pathlib import Path
 
 from luna_quantum import Model
 
-sleep_params = {"sleep_time_increment": 0.1, "sleep_time_initial":  0.1}
+sleep_params = {"sleep_time_increment": 0.1, "sleep_time_initial":  0.1, "sleep_time_max": 5,}
 
 def scale_sleep(model: Model):
     '''Scales the query intervalls to luna according to the number of variables.'''

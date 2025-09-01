@@ -5,13 +5,13 @@ from quark.core import Core, Data, Failed, Result
 from quark.interface_types import InterfaceType, Other
 
 from luna_quantum.solve.use_cases import MaxCut
-from luna_quantum import Model, LunaSolve
+from luna_quantum import Model, LunaSolve, Solution
 from luna_quantum.translator import LpTranslator
 
 import random
 import networkx as nx
 
-from .utils import scale_sleep, get_luna_api_key
+from .utils import get_luna_api_key
 
 
 @dataclass
@@ -66,8 +66,8 @@ class LunaMaxCut(Core):
         graph_dict = nx.to_dict_of_dicts(str_graph)
         maxcut = MaxCut(graph=graph_dict)
         meta_model = ls.model.create_from_use_case(name="MaxCut", use_case=maxcut)
-        model = Model.load_luna(model_id=meta_model.id)
-        lp_model = LpTranslator.from_aq(model)
+        self.model = Model.load_luna(model_id=meta_model.id)
+        lp_model = LpTranslator.from_aq(self.model)
         return Data(Other[str](lp_model))
 
     @override
@@ -75,11 +75,17 @@ class LunaMaxCut(Core):
         lp_solution = data.data
         if lp_solution is None:
             return Failed("No solution found")
+        
+        solution = Solution.from_dict(model=self.model, data=data.data)
+        if not solution.best().feasible:
+            return Failed("Invalid solution.")
+        obj_value = abs(solution.best().obj_value)
+        return Data(Other(obj_value))
+        
+        # partition = {i: 1 if lp_solution.get(f"x_{i}", 0.0) >= 0.5 else 0 for i in self.graph.nodes()}
+        # cut_value = 0
+        # for u, v, w in self.graph.edges(data="weight", default=1):
+        #     if partition[u] != partition[v]:
+        #         cut_value += w
 
-        partition = {i: 1 if lp_solution.get(f"x_{i}", 0.0) >= 0.5 else 0 for i in self.graph.nodes()}
-        cut_value = 0
-        for u, v, w in self.graph.edges(data="weight", default=1):
-            if partition[u] != partition[v]:
-                cut_value += w
-
-        return Data(Other(cut_value))
+        # return Data(Other(cut_value))

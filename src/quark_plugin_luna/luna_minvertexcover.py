@@ -5,13 +5,13 @@ from quark.core import Core, Data, Failed, Result
 from quark.interface_types import InterfaceType, Other
 
 from luna_quantum.solve.use_cases import MinimumVertexCover as MinVertexCover
-from luna_quantum import Model, LunaSolve
+from luna_quantum import Model, LunaSolve, Solution
 from luna_quantum.translator import LpTranslator
 
 import random
 import networkx as nx
 
-from .utils import scale_sleep, get_luna_api_key
+from .utils import get_luna_api_key
 
 
 @dataclass
@@ -61,8 +61,8 @@ class LunaMinVertexCover(Core):
         graph_dict = nx.to_dict_of_dicts(str_graph)
         mvc = MinVertexCover(graph=graph_dict, P=self.penalty)
         meta_model = ls.model.create_from_use_case(name="MinVertexCover", use_case=mvc)
-        model = Model.load_luna(model_id=meta_model.id)
-        lp_model = LpTranslator.from_aq(model)
+        self.model = Model.load_luna(model_id=meta_model.id)
+        lp_model = LpTranslator.from_aq(self.model)
 
         return Data(Other[str](lp_model))
 
@@ -71,9 +71,15 @@ class LunaMinVertexCover(Core):
         lp_solution = data.data
         if lp_solution is None:
                 return Failed("No solution found")
-
-        obj_value, valid = self.evaluate_solution(lp_solution)
-        if not valid:
-            return Failed("Invalid solution: edge not covered")
-
+        
+        solution = Solution.from_dict(model=self.model, data=data.data)
+        if not solution.best().feasible:
+            return Failed("Invalid solution.")
+        obj_value = abs(solution.best().obj_value)
         return Data(Other(obj_value))
+
+        # obj_value, valid = self.evaluate_solution(lp_solution)
+        # if not valid:
+        #     return Failed("Invalid solution: edge not covered")
+
+        # return Data(Other(obj_value))
