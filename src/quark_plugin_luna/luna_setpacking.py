@@ -5,11 +5,12 @@ from quark.core import Core, Data, Failed, Result
 from quark.interface_types import InterfaceType, Other
 
 from luna_quantum.solve.use_cases import SetPacking
-from luna_quantum import Model, LunaSolve
+from luna_quantum import Model, LunaSolve, Solution
 from luna_quantum.translator import LpTranslator
 
-import numpy as np
 import random
+
+from .utils import get_luna_api_key
 
 @dataclass
 class LunaSetPacking(Core):
@@ -55,34 +56,43 @@ class LunaSetPacking(Core):
     @override
     def preprocess(self, data: InterfaceType = None) -> Result:
         self.generate_set_picking(self.set_size, self.universe_size, self.density, self.weights, self.seed)
-        
+        LunaSolve.authenticate(get_luna_api_key())
         ls = LunaSolve()
 
         set_packing = SetPacking(subset_matrix=self.subset_matrix, weights=self.subset_weights)
         meta_model = ls.model.create_from_use_case(name="Set Packing", use_case=set_packing)
-        model = Model.load_luna(model_id=meta_model.id)
-        lp_model = LpTranslator.from_aq(model)
+        self.model = Model.load_luna(model_id=meta_model.id)
+        
+        lp_model = LpTranslator.from_aq(self.model)
         return Data(Other[str](lp_model))
 
     @override
-    def postprocess(self, data: InterfaceType) -> Result:
-            
+    def postprocess(self, data: InterfaceType) -> Result:        
         lp_solution = data.data
         if lp_solution is None:
             return Failed("No solution found")
         
-        solution = []
-        for i in range(len(self.subset_weights)):
-            val = lp_solution.get(f"x_{i}", 0.0)
-            solution.append(1 if val >= 0.5 else 0) 
-
-        for row in self.subset_matrix:
-            total = sum(x * val for x, val in zip(solution, row))
-            if total > 1:
-                return Failed("Invalid solution.")
-            
-        obj_value = sum(w * x for w, x in zip(self.subset_weights, solution))
+        solution = Solution.from_dict(model=self.model, data=data.data)
+        if not solution.best().feasible:
+            return Failed("Invalid solution.")
+        obj_value = abs(solution.best().obj_value)
         return Data(Other(obj_value))
+        
+        # solution = []
+        # for i in range(len(self.subset_weights)):
+        #     val = lp_solution.get(f"x_{i}", 0.0)
+        #     solution.append(1 if val >= 0.5 else 0) 
+
+        # result = [0] * len(self.subset_matrix[0])
+
+        # for i, flag in enumerate(solution):
+        #     if flag == 1:
+        #         for j in range(len(self.subset_matrix[0])):
+        #             result[j] += self.subset_matrix[i][j]
+        #             if result[j] > 1:
+        #                 return Failed("Invalid solution: overlapping subsets.")
+        # obj_value = sum(w * x for w, x in zip(self.subset_weights, solution))
+        # return Data(Other(obj_value))
 
     
 

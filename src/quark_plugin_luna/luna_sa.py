@@ -1,6 +1,5 @@
 from typing import override
 from dataclasses import dataclass
-import numpy as np
 
 from quark.core import Core, Data, Result
 from quark.interface_types import Other, Qubo
@@ -9,7 +8,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.translator import BqmTranslator
 from luna_quantum.solve.parameters.algorithms import SimulatedAnnealing
 
-from .utils import converter_solution, converter_model, get_runtime
+from .utils import scale_sleep, converter_solution, converter_model, get_runtime, get_luna_api_key
 
 
 @dataclass
@@ -51,7 +50,7 @@ class LUNASA(Core):
         This method preprocesses the input data (QUBO) for the LUNA simulated annealing module.
         """
 
-        LunaSolve.authenticate("")
+        LunaSolve.authenticate(get_luna_api_key())
         ls = LunaSolve()
         bqm = converter_model(data._q)
         model = BqmTranslator.to_aq(bqm, name="bqm")
@@ -72,7 +71,7 @@ class LUNASA(Core):
 
         job = algorithm.run(model)      
 
-        solution = job.result()
+        solution = job.result(**scale_sleep(model))
 
         self.runtime = get_runtime(solution)
         self._result = converter_solution(solution)
