@@ -19,18 +19,25 @@ class LunaLpQuboMapping(Core):
     @override
     def preprocess(self, data: Other) -> Result:
         luna_model = LpTranslator.to_aq(data.data)
-        self.cqm = CqmTranslator.from_aq(luna_model)
-        self.bqm, self.inverter = dimod.cqm_to_bqm(self.cqm)
-        q, _ = self.bqm.to_qubo() # _ is offset with a value of 0, so it can be omitted
-        return Data(Qubo.from_dict(q))
+        cqm = CqmTranslator.from_aq(luna_model)
+        bqm, _ = dimod.cqm_to_bqm(cqm) # _ is an inverter that is not needed here
+        q, _ = bqm.to_qubo() # _ is offset with a value of 0, so it can be omitted
+        formatted_qubo_dict = {}
+        for (var1, var2), coeff in q.items():
+            if var1 == var2:
+                key = "q" + str(var1[2:])
+            else:
+                key = "q" + str(var1[2:]) + ",q" + str(var2[2:])
+            formatted_qubo_dict[key] = coeff
+        return Data(Qubo.from_dict(formatted_qubo_dict))
 
     @override
     def postprocess(self, data: Other) -> Result:
         qubo_solution = data.data
-        bqm_sample = dict(qubo_solution)
-        lp_solution = dict(self.inverter(bqm_sample))
-
-        return Data(Other(lp_solution))
+        reformatted_solution = {}
+        for key, value in qubo_solution.items():
+            reformatted_solution["x_" + key[1:]] = qubo_solution[key]
+        return Data(Other(reformatted_solution))
 
 
 

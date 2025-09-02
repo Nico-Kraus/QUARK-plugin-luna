@@ -49,7 +49,8 @@ class LUNALeapHybridBqm(Core):
         LunaSolve.authenticate(get_luna_api_key())
         _ = LunaSolve()
 
-        bqm = converter_model(data._q)
+        # bqm = converter_model(data._q)
+        bqm = converter_model(data.as_dict())
         model = BqmTranslator.to_aq(bqm, name="bqm")
 
         algorithm = LeapHybridBqm(

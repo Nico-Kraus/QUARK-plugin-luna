@@ -50,7 +50,8 @@ class LUNASCIP(Core):
         best_solution = solution.best()
         
         self._result = dict(zip(solution.variable_names, best_solution.sample))
-        self.runtime = get_runtime(solution)
+        # self.runtime = get_runtime(solution)
+        self.runtime = solution.runtime.total_seconds
         
         return Data(None)
     

@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from typing import override
 
@@ -52,6 +53,7 @@ class LunaSetPacking(Core):
 
         self.subset_matrix = subset_matrix
         self.subset_weights = subset_weights
+        logging.info(f"Generated subset matrix: {self.subset_matrix}")
 
     @override
     def preprocess(self, data: InterfaceType = None) -> Result:
@@ -73,6 +75,7 @@ class LunaSetPacking(Core):
             return Failed("No solution found")
         
         solution = Solution.from_dict(model=self.model, data=data.data)
+        logging.info(f"Best solution found: {solution.best()}")
         if not solution.best().feasible:
             return Failed("Invalid solution.")
         obj_value = abs(solution.best().obj_value)
