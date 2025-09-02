@@ -106,11 +106,9 @@ class LUNAFlexQaoa(Core):
         job = algorithm.run(model)      
 
         solution = job.result(**scale_sleep(model))
-        best_solution = solution.best()
-        best_value = best_solution.obj_value
 
         self.runtime = solution.runtime 
-        self._result = best_value
+        self._result = dict(zip(solution.variable_names, solution.best().sample))
 
         return Data(None)
     

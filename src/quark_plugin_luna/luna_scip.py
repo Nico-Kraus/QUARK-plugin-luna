@@ -36,7 +36,7 @@ class LUNASCIP(Core):
         """
 
         LunaSolve.authenticate(get_luna_api_key())
-        ls = LunaSolve()
+        _ = LunaSolve()
 
         model = LpTranslator.to_aq(data.data)
 

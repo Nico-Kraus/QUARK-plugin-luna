@@ -1,7 +1,3 @@
-import dimod
-
-import numpy as np
-
 from typing import override
 from dataclasses import dataclass
 
@@ -9,11 +5,10 @@ from quark.core import Core, Data, Result
 from quark.interface_types import Other, Qubo
 
 from luna_quantum import LunaSolve
-from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import ParallelTempering
 
 
-from .utils import scale_sleep, get_luna_api_key, converter_solution, converter_model, get_runtime
+from .utils import get_best_solution, get_model,  scale_sleep, get_luna_api_key,   get_runtime
 @dataclass
 class LUNAPT(Core):
     """
@@ -53,8 +48,8 @@ class LUNAPT(Core):
         LunaSolve.authenticate(get_luna_api_key())
         _ = LunaSolve()
 
-        bqm = converter_model(data._q)
-        model = BqmTranslator.to_aq(bqm, name="bqm")
+        
+        model = get_model(data)
 
         algorithm = ParallelTempering(
             backend=None,
@@ -73,7 +68,7 @@ class LUNAPT(Core):
         job = algorithm.run(model)      
 
         solution = job.result(**scale_sleep(model))
-        best_solution = converter_solution(solution)
+        best_solution = get_best_solution(solution)
 
         self.runtime = get_runtime(solution)
         self._result = best_solution

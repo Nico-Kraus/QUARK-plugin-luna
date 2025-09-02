@@ -10,6 +10,7 @@ from luna_quantum.translator import CqmTranslator
 
 import dimod
 
+from .utils import build_varmap
 
 @dataclass
 class LunaLpQuboMapping(Core):
@@ -21,14 +22,25 @@ class LunaLpQuboMapping(Core):
         luna_model = LpTranslator.to_aq(data.data)
         self.cqm = CqmTranslator.from_aq(luna_model)
         self.bqm, self.inverter = dimod.cqm_to_bqm(self.cqm)
-        q, _ = self.bqm.to_qubo() # _ is offset with a value of 0, so it can be omitted
-        return Data(Qubo.from_dict(q))
+        q, _ = self.bqm.to_qubo()
+
+        self.varmap, self.inv_varmap = build_varmap(q)
+        qubo_dict = {}
+        for (i, j), value in q.items():
+            i_new, j_new = self.varmap[i], self.varmap[j]
+            if i_new == j_new:
+                qubo_dict[i_new] = float(value)
+            else:
+                qubo_dict[f"{i_new},{j_new}"] = float(value)
+
+        return Data(Qubo.from_dict(qubo_dict))
 
     @override
     def postprocess(self, data: Other) -> Result:
         qubo_solution = data.data
-        bqm_sample = dict(qubo_solution)
-        lp_solution = dict(self.inverter(bqm_sample))
+        variables = list(self.bqm.variables)
+        qubo_solution_dict = dict(zip(variables, qubo_solution))
+        lp_solution = dict(self.inverter(qubo_solution_dict))
 
         return Data(Other(lp_solution))
 

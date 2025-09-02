@@ -1,6 +1,4 @@
-import dimod
 
-import numpy as np
 
 from typing import override
 from dataclasses import dataclass
@@ -9,10 +7,9 @@ from quark.core import Core, Data, Result
 from quark.interface_types import Other, Qubo
 
 from luna_quantum import LunaSolve
-from luna_quantum.translator import BqmTranslator
 from luna_quantum.algorithms import QuantumAnnealing
 
-from .utils import scale_sleep, converter_solution, converter_model, get_runtime, get_luna_api_key
+from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key
 
 @dataclass
 class LUNAQA(Core):
@@ -59,10 +56,10 @@ class LUNAQA(Core):
         """
 
         LunaSolve.authenticate(get_luna_api_key())
-        ls = LunaSolve()
+        _ = LunaSolve()
 
-        bqm = converter_model(data._q)
-        model = BqmTranslator.to_aq(bqm, name="bqm")
+        
+        model = get_model(data)
 
         algorithm = QuantumAnnealing(
             backend=None,
@@ -86,7 +83,7 @@ class LUNAQA(Core):
         job = algorithm.run(model)      
 
         solution = job.result(**scale_sleep(model))
-        best_solution = converter_solution(solution)
+        best_solution = get_best_solution(solution)
 
         self.runtime = get_runtime(solution)
         self._result = best_solution
