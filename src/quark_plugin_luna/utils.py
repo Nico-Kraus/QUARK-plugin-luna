@@ -40,8 +40,8 @@ def build_varmap(qubo):
     return varmap, inv_varmap
 
 def get_runtime(solution):
-    if solution is not None:
-        return (solution.runtime.end - solution.runtime.start).total_seconds()
+    if solution is not None and solution.runtime is not None:
+        return solution.runtime.total_seconds
     else:
         return None
 

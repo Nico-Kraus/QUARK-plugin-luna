@@ -24,10 +24,10 @@ luna_lp_to_qubo: &luna_lp_to_qubo "luna_lp_qubo_mapping"
 tsp_to_qubo: &tsp_to_qubo "tsp_qubo_mapping_dnx"
 
 luna_classical_qubo: &luna_classical_qubo [
-  "luna_sa": {num_reads: 5},
-  #"luna_saga": {},
-  #"luna_qbsa": {},
-  #"luna_rrsa": {},
+  # "luna_sa": {num_reads: 5},
+  "luna_saga": {},
+  # "luna_qbsa": {},
+  # "luna_rrsa": {},
   # "luna_pa": {},
   # "luna_pt": {},
 ]
@@ -55,9 +55,9 @@ pipeline_tsp_dwave: &pipeline_tsp_dwave [*tsp_problems, *tsp_to_qubo, "simulated
 
 
 pipelines: [
-  *pipeline_luna_direct,
+  # *pipeline_luna_direct,
   *pipeline_luna_via_qubo, 
-  *pipeline_tsp_via_luna,
+  # *pipeline_tsp_via_luna,
   # *pipeline_tsp_direct,
   # *pipeline_tsp_dwave
 ]
