@@ -35,16 +35,6 @@ def converter_model(data):
             else:
                 bqm.add_interaction(var1, var2, value)
         return bqm
-    elif isinstance(sample_key, str):
-        bqm = dimod.BinaryQuadraticModel("BINARY")
-        for key, value in data.items():
-            if ',' not in key:
-                bqm.add_variable(key, value)
-            else:
-                bqm.add_interaction(key.split(',')[0], key.split(',')[1], value)
-        # bqm = dimod.BinaryQuadraticModel.from_qubo({(str(k[1:]), str(k[1:])): v for k, v in data.items() if ',' not in k} |
-        #                                           {(str(k.split(',')[0][1:]), str(k.split(',')[1][1:])): v for k, v in data.items() if ',' in k})
-        return bqm
     else:
         bqm = dimod.BinaryQuadraticModel.from_qubo(data)
         return bqm

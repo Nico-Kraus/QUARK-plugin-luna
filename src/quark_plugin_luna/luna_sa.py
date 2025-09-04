@@ -52,8 +52,7 @@ class LUNASA(Core):
 
         LunaSolve.authenticate(get_luna_api_key())
         ls = LunaSolve()
-        # bqm = converter_model(data._q)
-        bqm = converter_model(data.as_dict())
+        bqm = converter_model(data._q)
         model = BqmTranslator.to_aq(bqm, name="bqm")
         algorithm = SimulatedAnnealing(
             backend=self.backend,
@@ -74,8 +73,7 @@ class LUNASA(Core):
 
         solution = job.result(**scale_sleep(model))
 
-        # self.runtime = get_runtime(solution)
-        self.runtime = solution.runtime.total_seconds
+        self.runtime = get_runtime(solution)
         self._result = converter_solution(solution)
 
         return Data(None)

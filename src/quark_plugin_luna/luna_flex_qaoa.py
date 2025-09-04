@@ -109,9 +109,8 @@ class LUNAFlexQaoa(Core):
         best_solution = solution.best()
         best_value = best_solution.obj_value
 
-        self.runtime = solution.runtime.total_seconds
-        # self._result = best_value
-        self._result = best_solution
+        self.runtime = solution.runtime 
+        self._result = best_value
 
         return Data(None)
     
@@ -121,8 +120,5 @@ class LUNAFlexQaoa(Core):
 
     @override
     def postprocess(self, data: Data = None) -> Result:
-        formatted_solution = {}
-        for i, val in enumerate(list(self._result.sample)):
-            formatted_solution["x_" + str(i)] = val
-        result = Data(Other(formatted_solution))
+        result = Data(Other(self._result))
         return result

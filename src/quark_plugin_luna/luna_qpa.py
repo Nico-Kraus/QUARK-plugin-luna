@@ -84,8 +84,7 @@ class LUNAPopulationAnnealingQpu(Core):
         LunaSolve.authenticate(get_luna_api_key())
         _ = LunaSolve()
 
-        # bqm = converter_model(data._q)
-        bqm = converter_model(data.as_dict())
+        bqm = converter_model(data._q)
         model = BqmTranslator.to_aq(bqm, name="bqm")
 
         decomposer = Decomposer(
@@ -112,8 +111,7 @@ class LUNAPopulationAnnealingQpu(Core):
         job = algorithm.run(model)
         solution = job.result(**scale_sleep(model))
 
-        # self.runtime = get_runtime(solution)
-        self.runtime = solution.runtime.total_seconds
+        self.runtime = get_runtime(solution)
         self._result = converter_solution(solution)
 
         return Data(None)
