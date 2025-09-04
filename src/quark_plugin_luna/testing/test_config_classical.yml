@@ -2,7 +2,7 @@ plugins: ["quark_plugin_tsp", "quark_plugin_dwave", "quark_plugin_luna"]
 
 
 luna_problems: &luna_problems [
-  "luna_setpacking": { set_size: 10, universe_size: 5, density: 0.2, weights: "equal", seed: 2 },
+  # "luna_setpacking": { set_size: 10, universe_size: 5, density: 0.2, weights: "equal", seed: 2 },
   # "luna_setpacking": { set_size: 10, universe_size: 5, density: 0.2, weights: "equal", seed: 1 },
   # "luna_hamiltoniancycle": { num_nodes: 6, edge_prob: 0.8, seed: 42 },
   # "luna_hamiltoniancycle": { num_nodes: 10, edge_prob: 0.8, seed: 42 },
@@ -24,12 +24,12 @@ luna_lp_to_qubo: &luna_lp_to_qubo "luna_lp_qubo_mapping"
 tsp_to_qubo: &tsp_to_qubo "tsp_qubo_mapping_dnx"
 
 luna_classical_qubo: &luna_classical_qubo [
-  # "luna_sa": {num_reads: 5},
+  "luna_sa": {num_reads: 5},
   "luna_saga": {},
-  # "luna_qbsa": {},
-  # "luna_rrsa": {},
-  # "luna_pa": {},
-  # "luna_pt": {},
+  "luna_qbsa": {},
+  "luna_rrsa": {},
+  "luna_pa": {},
+  "luna_pt": {},
 ]
 
 luna_classical_lp: &luna_classical_lp [
@@ -53,11 +53,15 @@ pipeline_tsp_direct: &pipeline_tsp_direct [*tsp_problems, "classical_tsp_solver"
 # TSP problems -> DWave simulated annealer (for comparison)
 pipeline_tsp_dwave: &pipeline_tsp_dwave [*tsp_problems, *tsp_to_qubo, "simulated_annealer_dwave": { num_reads: 100 }]
 
+# Luna Problem with DWave
+# pipeline_luna_dwave: &pipeline_luna_dwave [*luna_problems, *luna_lp_to_qubo, "simulated_annealer_dwave": { num_reads: 100 }]
+
 
 pipelines: [
   # *pipeline_luna_direct,
-  *pipeline_luna_via_qubo, 
+  # *pipeline_luna_via_qubo, 
   # *pipeline_tsp_via_luna,
   # *pipeline_tsp_direct,
-  # *pipeline_tsp_dwave
+  # *pipeline_tsp_dwave,
+  pipeline_luna_dwave
 ]

@@ -32,15 +32,23 @@ def get_best_solution(solution:Solution)->list:
         return None
 
 
-def build_varmap(qubo):
+def convert_qubo(bqm):
+    qubo, _ = bqm.to_qubo()
     varmap = {}
     for (i, j) in qubo.keys():
         for v in (i, j):
             if v not in varmap:
                 idx = v.split("_")[1]
                 varmap[v] = f"q{idx}"
-    inv_varmap = {v: k for k, v in varmap.items()}
-    return varmap, inv_varmap
+
+    qubo_dict = {}
+    for (i, j), value in qubo.items():
+        i_new, j_new = varmap[i], varmap[j]
+        if i_new == j_new:
+            qubo_dict[i_new] = float(value)
+        else:
+            qubo_dict[f"{i_new},{j_new}"] = float(value)
+    return qubo_dict
 
 def get_runtime(solution):
     if solution is not None and solution.runtime is not None:

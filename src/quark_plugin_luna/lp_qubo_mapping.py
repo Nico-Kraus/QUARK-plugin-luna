@@ -10,7 +10,7 @@ from luna_quantum.translator import CqmTranslator
 
 import dimod
 
-from .utils import build_varmap
+from .utils import convert_qubo
 
 @dataclass
 class LunaLpQuboMapping(Core):
@@ -22,17 +22,8 @@ class LunaLpQuboMapping(Core):
         luna_model = LpTranslator.to_aq(data.data)
         self.cqm = CqmTranslator.from_aq(luna_model)
         self.bqm, self.inverter = dimod.cqm_to_bqm(self.cqm)
-        q, _ = self.bqm.to_qubo()
-
-        self.varmap, self.inv_varmap = build_varmap(q)
-        qubo_dict = {}
-        for (i, j), value in q.items():
-            i_new, j_new = self.varmap[i], self.varmap[j]
-            if i_new == j_new:
-                qubo_dict[i_new] = float(value)
-            else:
-                qubo_dict[f"{i_new},{j_new}"] = float(value)
-
+        qubo_dict = convert_qubo(self.bqm)
+        
         return Data(Qubo.from_dict(qubo_dict))
 
     @override
