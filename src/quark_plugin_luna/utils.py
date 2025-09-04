@@ -26,7 +26,10 @@ def get_model(data:Qubo) -> Model:
     return QuboTranslator.to_aq(data.as_matrix())
 
 def get_best_solution(solution:Solution)->list:
-    return list(solution.best().sample)
+    if solution is not None:
+        return list(solution.best().sample)
+    else:
+        return None
 
 
 def build_varmap(qubo):
