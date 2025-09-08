@@ -28,7 +28,7 @@ def get_model(data:Qubo) -> Model:
 
 def get_best_solution(solution:Solution)->list:
     if solution is not None:
-        return dict(zip(solution.variable_names, list(solution.best().sample)))
+        return solution.best().sample.to_dict()
     else:
         return None
 
