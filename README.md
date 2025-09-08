@@ -24,7 +24,7 @@
 **Maximum Independent Set (`luna_mis`)**
 - Creates a maximum independent set problem: find the largest set of vertices with no edges between them
 - Parameters: `num_nodes`, `edge_prob`, `seed`
-- Ensures at least one edge exists to create meaningful constraints
+- Ensures a connected graph
 
 ### Solving Algorithms and Mapping:
 
