@@ -28,10 +28,8 @@ class LunaLpQuboMapping(Core):
 
     @override
     def postprocess(self, data: Other) -> Result:
-        qubo_solution = data.data
-        variables = list(self.bqm.variables)
-        qubo_solution_dict = dict(zip(variables, qubo_solution))
-        lp_solution = dict(self.inverter(qubo_solution_dict))
+       
+        lp_solution = dict(self.inverter(data.data))
 
         return Data(Other(lp_solution))
 
