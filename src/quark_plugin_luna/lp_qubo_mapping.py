@@ -10,6 +10,7 @@ from luna_quantum.translator import CqmTranslator
 
 import dimod
 
+from .utils import convert_qubo
 
 @dataclass
 class LunaLpQuboMapping(Core):
@@ -21,14 +22,14 @@ class LunaLpQuboMapping(Core):
         luna_model = LpTranslator.to_aq(data.data)
         self.cqm = CqmTranslator.from_aq(luna_model)
         self.bqm, self.inverter = dimod.cqm_to_bqm(self.cqm)
-        q, _ = self.bqm.to_qubo() # _ is offset with a value of 0, so it can be omitted
-        return Data(Qubo.from_dict(q))
+        qubo_dict = convert_qubo(self.bqm)
+        
+        return Data(Qubo.from_dict(qubo_dict))
 
     @override
     def postprocess(self, data: Other) -> Result:
-        qubo_solution = data.data
-        bqm_sample = dict(qubo_solution)
-        lp_solution = dict(self.inverter(bqm_sample))
+       
+        lp_solution = dict(self.inverter(data.data))
 
         return Data(Other(lp_solution))
 

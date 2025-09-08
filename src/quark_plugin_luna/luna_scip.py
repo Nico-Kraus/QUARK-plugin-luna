@@ -36,7 +36,7 @@ class LUNASCIP(Core):
         """
 
         LunaSolve.authenticate(get_luna_api_key())
-        ls = LunaSolve()
+        _ = LunaSolve()
 
         model = LpTranslator.to_aq(data.data)
 
@@ -48,7 +48,6 @@ class LUNASCIP(Core):
 
         solution = job.result(**scale_sleep(model))
         best_solution = solution.best()
-        
         self._result = dict(zip(solution.variable_names, best_solution.sample))
         self.runtime = get_runtime(solution)
         

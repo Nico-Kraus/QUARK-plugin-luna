@@ -1,11 +1,12 @@
-import dimod
-import numpy as np
 import math
 import os
 import yaml
 from pathlib import Path
 
-from luna_quantum import Model
+from quark.interface_types import Qubo
+
+from luna_quantum import Model, Solution
+from luna_quantum.translator import QuboTranslator
 
 sleep_params = {"sleep_time_increment": 0.1, "sleep_time_initial":  0.1, "sleep_time_max": 5,}
 
@@ -21,47 +22,38 @@ def scale_sleep(model: Model):
         sleep_params_copy[k] *= factor
     return sleep_params_copy
 
-def converter_model(data):
-    sample_key = next(iter(data))
-    
-    if isinstance(sample_key, tuple) and isinstance(sample_key[0], tuple):
-        bqm = dimod.BinaryQuadraticModel('BINARY')
-        for (index1, index2), value in data.items():
-            var1 = f"v{index1[0]}_{index1[1]}"
-            var2 = f"v{index2[0]}_{index2[1]}"
-            
-            if var1 == var2:
-                bqm.add_variable(var1, value)
-            else:
-                bqm.add_interaction(var1, var2, value)
-        return bqm
+def get_model(data:Qubo) -> Model:
+    print("matrix:\n", data.as_matrix())
+    return QuboTranslator.to_aq(data.as_matrix())
+
+def get_best_solution(solution:Solution)->list:
+    if solution is not None:
+        return dict(zip(solution.variable_names, list(solution.best().sample)))
     else:
-        bqm = dimod.BinaryQuadraticModel.from_qubo(data)
-        return bqm
+        return None
 
 
-def converter_solution(solution):
-    objective_values = solution.obj_values
-    best_index = np.argmin(objective_values)
+def convert_qubo(bqm):
+    qubo, _ = bqm.to_qubo()
+    varmap = {}
+    for (i, j) in qubo.keys():
+        for v in (i, j):
+            if v not in varmap:
+                idx = v.split("_")[1]
+                varmap[v] = f"q{idx}"
 
-    best_sample = solution.samples.tolist()[best_index]
-    var_names = solution.variable_names
-
-    sample_dict = {}
-    
-    for var, val in zip(var_names, best_sample):
-        if var.startswith('v') and '_' in var:  # 2-tuple style
-            i, j = map(int, var[1:].split('_'))
-            sample_dict[(i, j)] = np.int8(val)
-        else:  # string keys
-            sample_dict[str(var)] = int(val)
-    
-    return sample_dict
-
+    qubo_dict = {}
+    for (i, j), value in qubo.items():
+        i_new, j_new = varmap[i], varmap[j]
+        if i_new == j_new:
+            qubo_dict[i_new] = float(value)
+        else:
+            qubo_dict[f"{i_new},{j_new}"] = float(value)
+    return qubo_dict
 
 def get_runtime(solution):
-    if solution is not None:
-        return (solution.runtime.end - solution.runtime.start).total_seconds()
+    if solution is not None and solution.runtime is not None:
+        return solution.runtime.total_seconds
     else:
         return None
 
@@ -81,10 +73,3 @@ def get_luna_api_key() -> str:
         "LUNA_API_KEY not found. Please set it as an environment variable "
         "or provide it in credentials.yaml"
     )
-
-def count_logical_qubits(qubo_dict):
-    vars_in_qubo = set()
-    for i, j in qubo_dict.keys():
-        vars_in_qubo.add(i)
-        vars_in_qubo.add(j)
-    return len(vars_in_qubo)

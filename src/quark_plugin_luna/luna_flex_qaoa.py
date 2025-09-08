@@ -20,7 +20,7 @@ from luna_quantum.solve.parameters.algorithms.quantum_gate.flex_qaoa import (
     QuadraticPenaltyParams
 )
 
-from .utils import scale_sleep, get_luna_api_key
+from .utils import scale_sleep, get_luna_api_key, get_runtime
 
 @dataclass
 class LUNAFlexQaoa(Core):
@@ -106,11 +106,9 @@ class LUNAFlexQaoa(Core):
         job = algorithm.run(model)      
 
         solution = job.result(**scale_sleep(model))
-        best_solution = solution.best()
-        best_value = best_solution.obj_value
 
-        self.runtime = solution.runtime 
-        self._result = best_value
+        self.runtime = get_runtime(solution)
+        self._result = dict(zip(solution.variable_names, solution.best().sample))
 
         return Data(None)
     

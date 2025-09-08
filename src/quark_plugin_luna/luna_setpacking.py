@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from typing import override
 
@@ -32,7 +33,7 @@ class LunaSetPacking(Core):
     seed : int = 123
 
     def generate_set_picking(self, set_size, universe_size, density, weights, seed):
-        
+
         if seed is not None:
             random.seed(seed)
         subset_matrix = []
@@ -52,6 +53,7 @@ class LunaSetPacking(Core):
 
         self.subset_matrix = subset_matrix
         self.subset_weights = subset_weights
+        logging.info(f"Generated subset matrix: {self.subset_matrix}")
 
     @override
     def preprocess(self, data: InterfaceType = None) -> Result:
@@ -62,7 +64,7 @@ class LunaSetPacking(Core):
         set_packing = SetPacking(subset_matrix=self.subset_matrix, weights=self.subset_weights)
         meta_model = ls.model.create_from_use_case(name="Set Packing", use_case=set_packing)
         self.model = Model.load_luna(model_id=meta_model.id)
-        
+
         lp_model = LpTranslator.from_aq(self.model)
         return Data(Other[str](lp_model))
 
@@ -71,28 +73,9 @@ class LunaSetPacking(Core):
         lp_solution = data.data
         if lp_solution is None:
             return Failed("No solution found")
-        
         solution = Solution.from_dict(model=self.model, data=data.data)
+        logging.info(f"Best solution found: {solution.best()}")
         if not solution.best().feasible:
             return Failed("Invalid solution.")
-        obj_value = abs(solution.best().obj_value)
+        obj_value = solution.best().obj_value
         return Data(Other(obj_value))
-        
-        # solution = []
-        # for i in range(len(self.subset_weights)):
-        #     val = lp_solution.get(f"x_{i}", 0.0)
-        #     solution.append(1 if val >= 0.5 else 0) 
-
-        # result = [0] * len(self.subset_matrix[0])
-
-        # for i, flag in enumerate(solution):
-        #     if flag == 1:
-        #         for j in range(len(self.subset_matrix[0])):
-        #             result[j] += self.subset_matrix[i][j]
-        #             if result[j] > 1:
-        #                 return Failed("Invalid solution: overlapping subsets.")
-        # obj_value = sum(w * x for w, x in zip(self.subset_weights, solution))
-        # return Data(Other(obj_value))
-
-    
-
