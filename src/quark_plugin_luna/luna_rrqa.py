@@ -6,8 +6,9 @@ from quark.interface_types import Other, Qubo
 
 from luna_quantum import LunaSolve
 from luna_quantum.algorithms import RepeatedReverseQuantumAnnealing
+from luna_quantum.backends import DWaveQpu
 
-from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key
+from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key, get_dwave_token
 
 
 @dataclass
@@ -72,9 +73,14 @@ class LUNARepeatedReverseQuantumAnnealing(Core):
         _ = LunaSolve()
         
         model = get_model(data)
+        backend = DWaveQpu(
+            embedding_parameters=None,
+            qpu_backend='default',
+            token=get_dwave_token()
+        )
         
         algorithm = RepeatedReverseQuantumAnnealing(
-            backend=self.backend,
+            backend=backend,
             anneal_offsets=self.anneal_offsets,
             annealing_time=self.annealing_time,
             auto_scale=self.auto_scale,

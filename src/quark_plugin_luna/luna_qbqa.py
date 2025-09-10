@@ -7,8 +7,9 @@ from quark.interface_types import Other, Qubo
 from luna_quantum import LunaSolve
 from luna_quantum.algorithms import QBSolvLikeQpu
 from luna_quantum.solve.parameters.algorithms.base_params import Decomposer, QuantumAnnealingParams
+from luna_quantum.backends import DWaveQpu
 
-from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key
+from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key, get_dwave_token
 
 
 @dataclass
@@ -83,9 +84,14 @@ class LUNAQBSolvLikeQpu(Core):
 
         
         model = get_model(data)
+        backend = DWaveQpu(
+            embedding_parameters=None,
+            qpu_backend='default',
+            token=get_dwave_token()
+        )
 
         algorithm = QBSolvLikeQpu(
-            backend=self.backend,
+            backend=backend,
             decomposer_size=self.decomposer_size,
             rolling=self.rolling,
             rolling_history=self.rolling_history,

@@ -7,8 +7,9 @@ from quark.interface_types import Other, Qubo
 from luna_quantum import LunaSolve
 from luna_quantum.algorithms import QAGA
 from luna_quantum.solve.parameters.algorithms.base_params import QuantumAnnealingParams
+from luna_quantum.backends import DWaveQpu
 
-from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key
+from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key, get_dwave_token
 
 
 @dataclass
@@ -87,8 +88,14 @@ class LUNAQAGA(Core):
         
         model = get_model(data)
 
+        backend = DWaveQpu(
+            embedding_parameters=None,
+            qpu_backend='default',
+            token=get_dwave_token()
+        )
+
         algorithm = QAGA(
-            backend=self.backend,
+            backend=backend,
             p_size=self.p_size,
             p_inc_num=self.p_inc_num,
             p_max=self.p_max,

@@ -7,8 +7,9 @@ from quark.interface_types import Other, Qubo
 from luna_quantum import LunaSolve
 from luna_quantum.algorithms import PopulationAnnealingQpu
 from luna_quantum.solve.parameters.algorithms.base_params import Decomposer, QuantumAnnealingParams
+from luna_quantum.backends import DWaveQpu
 
-from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key
+from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key, get_dwave_token
 
 
 @dataclass
@@ -85,6 +86,11 @@ class LUNAPopulationAnnealingQpu(Core):
 
         
         model = get_model(data)
+        backend = DWaveQpu(
+            embedding_parameters=None,
+            qpu_backend='default',
+            token=get_dwave_token()
+        )
 
         decomposer = Decomposer(
             size=self.decomposer_size,
@@ -96,7 +102,7 @@ class LUNAPopulationAnnealingQpu(Core):
         )
 
         algorithm = PopulationAnnealingQpu(
-            backend=self.backend,
+            backend=backend,
             num_reads=self.num_reads,
             num_retries=self.num_retries,
             max_iter=self.max_iter,

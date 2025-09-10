@@ -7,8 +7,9 @@ from quark.interface_types import Other, Qubo
 from luna_quantum import LunaSolve
 from luna_quantum.algorithms import LeapHybridBqm
 from luna_quantum.solve.parameters.algorithms.base_params import QuantumAnnealingParams
+from luna_quantum.backends import DWaveQpu
 
-from .utils import get_best_solution, get_model, scale_sleep, get_runtime, get_luna_api_key
+from .utils import get_best_solution, get_model, scale_sleep, get_runtime, get_luna_api_key, get_dwave_token
 
 
 @dataclass
@@ -50,9 +51,14 @@ class LUNALeapHybridBqm(Core):
 
         
         model = get_model(data)
+        backend = DWaveQpu(
+            embedding_parameters=None,
+            qpu_backend='default',
+            token=get_dwave_token()
+        )
 
         algorithm = LeapHybridBqm(
-            backend=self.backend,
+            backend=backend,
             time_limit=self.time_limit,
             quantum_annealing_params=self.quantum_annealing_params,
         )

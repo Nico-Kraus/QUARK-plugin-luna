@@ -7,8 +7,9 @@ from quark.interface_types import Other
 from luna_quantum import LunaSolve
 from luna_quantum.translator import LpTranslator
 from luna_quantum.algorithms import LeapHybridCqm
+from luna_quantum.backends import DWaveQpu
 
-from .utils import scale_sleep, get_luna_api_key
+from .utils import scale_sleep, get_luna_api_key, get_dwave_token
 
 
 @dataclass
@@ -42,9 +43,14 @@ class LUNALeapHybridCqm(Core):
         _ = LunaSolve()
 
         model = LpTranslator.to_aq(data.data)
+        backend = DWaveQpu(
+            embedding_parameters=None,
+            qpu_backend='default',
+            token=get_dwave_token()
+        )
 
         algorithm = LeapHybridCqm(
-            backend=self.backend,
+            backend=backend,
             time_limit=self.time_limit,
             spin_variables=self.spin_variables
         )
