@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import override
 
-from quark.core import Core, Data, Result
+from quark.core import Core, Data, Result, Failed
 from quark.interface_types import Other, Qubo
 
 from luna_quantum.translator import LpTranslator
@@ -28,7 +28,8 @@ class LunaLpQuboMapping(Core):
 
     @override
     def postprocess(self, data: Other) -> Result:
-       
+        if data.data is None:
+            return Failed("Solution is None.")
         lp_solution = dict(self.inverter(data.data))
 
         return Data(Other(lp_solution))

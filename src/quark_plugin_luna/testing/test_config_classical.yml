@@ -24,7 +24,7 @@ luna_lp_to_qubo: &luna_lp_to_qubo "luna_lp_qubo_mapping"
 tsp_to_qubo: &tsp_to_qubo "tsp_qubo_mapping_dnx"
 
 luna_classical_qubo: &luna_classical_qubo [
-  # "luna_sa": {num_reads: 5},
+  "luna_sa": {num_reads: 5},
   # "luna_saga": {},
   # "luna_qbsa": {},
   # "luna_rrsa": {},
