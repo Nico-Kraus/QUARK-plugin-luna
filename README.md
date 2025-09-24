@@ -31,10 +31,29 @@
 Luna Usecases provide an LP string, solveable directly by the scip solver or 
 transformable to qubo by the `lp_qubo_maping` module.
 This transformation will encode constraints as slack variables.
-Constraint conserving algorithms are `luna_scip`, `luna_leapcqm`, as well as `luna_flex` in a sense where
+Constraint conserving algorithms are `luna_scip`, `luna_leapcqm`, `luna_da`, as well as `luna_flex` in a sense where
 constraints are encoded in a limited search space for QAOA.
 
 All module parameters are documented in detail within their respective `.py` files.
+
+Solvers:
+qa - Quantum Annealing
+qaoa - Quantum Approximate Optimization Algorithm
+qaga - Genetic Algorithm enhanced with quantum annealing
+qbqa - QPU-backed qbsolv-like decomposition
+qpa - QPU-backed Population Annealing
+rrqa - Repeated Reverse Quantum Annealing
+leapbqm - D-Wave Leap's quantum-classical Hybrid BQM Solver
+kerb - Kerberos hybrid quantum-classical optimization solver
+sa - Simulated Annealing
+saga - Simulated Annealing Genetic Algorithm
+qbsa - QBSolv-like Simulated Annealing
+rrsa - Repeated Reverse Simulated Annealing
+pa - Population Annealing
+flex_qaoa - FlexQAOA
+leapcqm - D-Wave Leap’s quantum-classical Hybrid CQM solver
+da - Fujitsu Digital Annealer
+scip - Solve Constraint Integer Programming 
 
 <br>
 
@@ -56,7 +75,8 @@ All module parameters are documented in detail within their respective `.py` fil
 | luna_pa              | quark.interface_types.qubo | None                       | Classical
 | luna_flex_qaoa       | quark.interface_types.other (LP) | None                  | Quantum
 | luna_leapcqm         | quark.interface_types.other (LP) | None                  | Hybrid
-| luna_scip          | quark.interface_types.other (LP) | None                  | Classical
+| luna_da              | quark.interface_types.other (LP) | None                  | Classical
+| luna_scip            | quark.interface_types.other (LP) | None                  | Classical
 
 <br>
 

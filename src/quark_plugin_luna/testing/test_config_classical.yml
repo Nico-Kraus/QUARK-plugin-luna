@@ -11,7 +11,7 @@ luna_problems: &luna_problems [
   # "luna_mis": { num_nodes: 5, edge_prob: 0.4, seed: 42 },
   # "luna_mis": { num_nodes: 10, edge_prob: 0.4, seed: 42 },
   # "luna_maxcut": { num_nodes: 8, edge_prob: 0.5, weight_range: [1, 5], seed: 42 },
-  # "luna_maxcut": { num_nodes: 14, edge_prob: 0.5, weight_range: [1, 5], seed: 42 },
+  "luna_maxcut": { num_nodes: 14, edge_prob: 0.5, weight_range: [1, 5], seed: 42 },
 ]
 
 tsp_problems: &tsp_problems [
@@ -33,7 +33,9 @@ luna_classical_qubo: &luna_classical_qubo [
 ]
 
 luna_classical_lp: &luna_classical_lp [
-  "luna_scip"
+  "luna_scip",
+  "luna_da",
+  "luna_da" : {version: "v4"},
 ]
 
 # Pipeline definitions
@@ -58,8 +60,8 @@ pipeline_tsp_dwave: &pipeline_tsp_dwave [*tsp_problems, *tsp_to_qubo, "simulated
 
 
 pipelines: [
-  # *pipeline_luna_direct, 
-  *pipeline_luna_via_qubo,
+  *pipeline_luna_direct, 
+  # *pipeline_luna_via_qubo,
   # *pipeline_tsp_via_luna,
   # *pipeline_tsp_direct,
   # *pipeline_tsp_dwave,

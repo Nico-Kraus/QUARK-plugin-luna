@@ -18,6 +18,7 @@ from .luna_qaga import LUNAQAGA
 from .luna_qbqa import LUNAQBSolvLikeQpu
 from .luna_qpa import LUNAPopulationAnnealingQpu
 from .luna_rrqa import LUNARepeatedReverseQuantumAnnealing
+from .luna_da import LUNADA
 
 from .lp_qubo_mapping import LunaLpQuboMapping
 
@@ -47,6 +48,7 @@ def register() -> None:
     factory.register("luna_qpa", LUNAPopulationAnnealingQpu)
     factory.register("luna_rrqa", LUNARepeatedReverseQuantumAnnealing)
     factory.register("luna_scip", LUNASCIP)
+    factory.register("luna_da", LUNADA)
 
     # mappings
     factory.register("luna_lp_qubo_mapping", LunaLpQuboMapping)
