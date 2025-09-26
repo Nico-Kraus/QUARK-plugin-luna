@@ -206,7 +206,6 @@ class LUNADA(Core):
 
         solution = job.result(**scale_sleep(model))
         best_solution = get_best_solution(solution)
-        print("da_solution:", solution)
         self.runtime = get_runtime(solution)
         self._result = best_solution
 
