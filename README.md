@@ -36,24 +36,24 @@ constraints (one-hot and inequality) are preserverd.
 
 All module parameters are documented in detail within their respective `.py` files.
 
-Solvers:
-qa - Quantum Annealing
-qaoa - Quantum Approximate Optimization Algorithm
-qaga - Genetic Algorithm enhanced with quantum annealing
-qbqa - QPU-backed qbsolv-like decomposition
-qpa - QPU-backed Population Annealing
-rrqa - Repeated Reverse Quantum Annealing
-leapbqm - D-Wave Leap's quantum-classical Hybrid BQM Solver
-kerb - Kerberos hybrid quantum-classical optimization solver
-sa - Simulated Annealing
-saga - Simulated Annealing Genetic Algorithm
-qbsa - QBSolv-like Simulated Annealing
-rrsa - Repeated Reverse Simulated Annealing
-pa - Population Annealing
-flex_qaoa - FlexQAOA
-leapcqm - D-Wave Leap’s quantum-classical Hybrid CQM solver
-da - Fujitsu Digital Annealer
-scip - Solve Constraint Integer Programming 
+Solvers: <br>
+qa - Quantum Annealing<br>
+qaoa - Quantum Approximate Optimization Algorithm<br>
+qaga - Genetic Algorithm enhanced with quantum annealing<br>
+qbqa - QPU-backed qbsolv-like decomposition<br>
+qpa - QPU-backed Population Annealing<br>
+rrqa - Repeated Reverse Quantum Annealing<br>
+leapbqm - D-Wave Leap's quantum-classical Hybrid BQM Solver<br>
+kerb - Kerberos hybrid quantum-classical optimization solver<br>
+sa - Simulated Annealing<br>
+saga - Simulated Annealing Genetic Algorithm<br>
+qbsa - QBSolv-like Simulated Annealing<br>
+rrsa - Repeated Reverse Simulated Annealing<br>
+pa - Population Annealing<br>
+flex_qaoa - FlexQAOA<br>
+leapcqm - D-Wave Leap’s quantum-classical Hybrid CQM solver<br>
+da - Fujitsu Digital Annealer<br>
+scip - Solve Constraint Integer Programming <br>
 
 <br>
 
