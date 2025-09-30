@@ -1,0 +1,73 @@
+plugins: ["quark_plugin_tsp", "quark_plugin_dwave", "quark_plugin_luna"]
+
+luna_problems: &luna_problems [
+  "luna_setpacking": { set_size: 4, universe_size: 6, density: 0.4, weights: "equal", seed: 123 },
+  #"luna_hamiltoniancycle": { num_nodes: 4, edge_prob: 0.6, seed: 42 },
+  #"luna_minvertexcover": { num_nodes: 5, edge_prob: 0.5, seed: 42 },
+  #"luna_mis": { num_nodes: 5, edge_prob: 0.4, seed: 42 },
+  #"luna_maxcut": { num_nodes: 4, edge_prob: 0.5, weight_range: [1, 5], seed: 42 }
+]
+
+tsp_problems: &tsp_problems [
+  "tsp_graph_provider": { nodes: 4, seed: 42 },
+  "tsp_graph_provider": { nodes: 5, seed: 123 }
+]
+
+luna_lp_to_qubo: &luna_lp_to_qubo "luna_lp_qubo_mapping"
+tsp_to_qubo: &tsp_to_qubo "tsp_qubo_mapping_dnx"
+
+
+luna_quantum_solvers: &luna_quantum_solvers [
+  "luna_qa": {},
+  "luna_qaoa": {},
+  "luna_qaga": {},
+  "luna_qbqa": {},
+  "luna_qpa": {},
+  "luna_rrqa": {},
+  "luna_kerb": {},
+  "luna_leapbqm": { }
+]
+
+
+# Classical LP solvers for ground truth
+luna_classical_lp: &luna_classical_lp [
+  "luna_scip"
+]
+
+# constraint quantum solver
+luna_constraint_quantum: &luna_constraint_quantum [
+  "luna_flex_qaoa": { },
+  #"luna_leapcqm": { }
+]
+
+# Classical TSP solver for ground truth
+tsp_classical: &tsp_classical [
+  "classical_tsp_solver"
+]
+
+# Pipeline definitions
+
+# Luna LP problems -> Classical LP solver (GROUND TRUTH)
+pipeline_luna_lp_classical: &pipeline_luna_lp_classical [*luna_problems, *luna_classical_lp]
+
+# Luna LP problems -> Constraint preserving Quantum solvers
+pipeline_luna_constraint_quantum: &pipeline_luna_constraint_quantum [*luna_problems, *luna_constraint_quantum]
+
+# Luna LP problems -> QUBO mapping -> Quantum QUBO solvers
+pipeline_luna_qubo_quantum: &pipeline_luna_qubo_quantum [*luna_problems, *luna_lp_to_qubo, *luna_quantum_solvers]
+
+# TSP problems -> Classical solver (GROUND TRUTH)
+pipeline_tsp_classical: &pipeline_tsp_classical [*tsp_problems, *tsp_classical]
+
+# TSP problems -> QUBO mapping -> Luna quantum QUBO solvers
+pipeline_tsp_luna_quantum: &pipeline_tsp_luna_quantum [*tsp_problems, *tsp_to_qubo, *luna_quantum_solvers]
+
+
+# All pipelines
+pipelines: [
+  #*pipeline_luna_lp_classical,
+  *pipeline_luna_constraint_quantum,
+  #*pipeline_luna_qubo_quantum,
+  #*pipeline_tsp_classical,
+  #*pipeline_tsp_luna_quantum,
+]
