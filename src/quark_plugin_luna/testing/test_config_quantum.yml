@@ -2,10 +2,10 @@ plugins: ["quark_plugin_tsp", "quark_plugin_dwave", "quark_plugin_luna"]
 
 luna_problems: &luna_problems [
   "luna_setpacking": { set_size: 4, universe_size: 6, density: 0.4, weights: "equal", seed: 123 },
-  "luna_hamiltoniancycle": { num_nodes: 4, edge_prob: 0.6, seed: 42 },
-  "luna_minvertexcover": { num_nodes: 5, edge_prob: 0.5, seed: 42 },
-  "luna_mis": { num_nodes: 5, edge_prob: 0.4, seed: 42 },
-  "luna_maxcut": { num_nodes: 4, edge_prob: 0.5, weight_range: [1, 5], seed: 42 }
+  #"luna_hamiltoniancycle": { num_nodes: 4, edge_prob: 0.6, seed: 42 },
+  #"luna_minvertexcover": { num_nodes: 5, edge_prob: 0.5, seed: 42 },
+  #"luna_mis": { num_nodes: 5, edge_prob: 0.4, seed: 42 },
+  #"luna_maxcut": { num_nodes: 4, edge_prob: 0.5, weight_range: [1, 5], seed: 42 }
 ]
 
 tsp_problems: &tsp_problems [
@@ -36,8 +36,8 @@ luna_classical_lp: &luna_classical_lp [
 
 # constraint quantum solver
 luna_constraint_quantum: &luna_constraint_quantum [
-  "luna_flex_qaoa": { num_reads: 100 },
-  "luna_leapcqm": { num_reads: 100 }
+  "luna_flex_qaoa": { },
+  #"luna_leapcqm": { }
 ]
 
 # Classical TSP solver for ground truth
@@ -65,9 +65,9 @@ pipeline_tsp_luna_quantum: &pipeline_tsp_luna_quantum [*tsp_problems, *tsp_to_qu
 
 # All pipelines
 pipelines: [
-  *pipeline_luna_lp_classical,
-  *pipeline_luna_lp_quantum_hybrid,
-  *pipeline_luna_qubo_quantum,
-  *pipeline_tsp_classical,
-  *pipeline_tsp_luna_quantum,
+  #*pipeline_luna_lp_classical,
+  *pipeline_luna_constraint_quantum,
+  #*pipeline_luna_qubo_quantum,
+  #*pipeline_tsp_classical,
+  #*pipeline_tsp_luna_quantum,
 ]

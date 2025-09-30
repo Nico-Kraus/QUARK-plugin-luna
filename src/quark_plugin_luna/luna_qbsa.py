@@ -8,7 +8,7 @@ from luna_quantum import LunaSolve
 from luna_quantum.algorithms import QBSolvLikeSimulatedAnnealing
 from luna_quantum.solve.parameters.algorithms.base_params import SimulatedAnnealingBaseParams
 
-from .utils import get_best_solution, get_model,  scale_sleep,   get_runtime, get_luna_api_key
+from .utils import get_best_solution, get_model,  scale_sleep, get_runtime, get_luna_api_key
 
 
 @dataclass

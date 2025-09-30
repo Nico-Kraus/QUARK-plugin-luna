@@ -13,8 +13,9 @@ from luna_quantum.solve.parameters.algorithms.base_params import (
     SimulatedAnnealingBaseParams,
     TabuKerberosParams
 )
+from luna_quantum.backends import DWaveQpu
 
-from .utils import get_best_solution, get_model, scale_sleep,   get_runtime, get_luna_api_key
+from .utils import get_best_solution, get_model, scale_sleep,   get_runtime, get_luna_api_key, get_dwave_token
 
 
 @dataclass
@@ -108,9 +109,15 @@ class LUNAKerberos(Core):
         _ = LunaSolve()
         
         model = get_model(data)
+
+        backend = DWaveQpu(
+            embedding_parameters=None,
+            qpu_backend='default',
+            token=get_dwave_token()
+        )
         
         algorithm = Kerberos(
-            backend=self.backend,
+            backend=backend,
             num_reads=self.num_reads,
             num_retries=self.num_retries,
             max_iter=self.max_iter,

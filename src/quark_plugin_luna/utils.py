@@ -55,6 +55,14 @@ def get_runtime(solution):
         return solution.runtime.total_seconds
     else:
         return None
+    
+def get_dwave_token() -> str:
+    cred_file = Path("credentials.yaml")
+    if cred_file.exists():
+        with open(cred_file, "r") as f:
+            creds = yaml.safe_load(f)
+        if "DWAVE_TOKEN" in creds and creds["DWAVE_TOKEN"]:
+            return creds["DWAVE_TOKEN"]
 
 def get_luna_api_key() -> str:
     key = os.getenv("LUNA_API_KEY")

@@ -2,8 +2,12 @@ plugins: ["quark_plugin_tsp", "quark_plugin_dwave", "quark_plugin_luna"]
 
 
 luna_problems: &luna_problems [
+  "luna_setpacking": { set_size: 6, universe_size: 4, density: 0.4, weights: "equal", seed: 2 },
   "luna_setpacking": { set_size: 13, universe_size: 5, density: 0.4, weights: "equal", seed: 2 },
-  # "luna_setpacking": { set_size: 10, universe_size: 5, density: 0.2, weights: "equal", seed: 1 },
+  "luna_setpacking": { set_size: 20, universe_size: 8, density: 0.4, weights: "equal", seed: 1 },
+  "luna_setpacking": { set_size: 40, universe_size: 12, density: 0.4, weights: "equal", seed: 1 },
+  "luna_setpacking": { set_size: 70, universe_size: 17, density: 0.4, weights: "equal", seed: 1 },
+  "luna_setpacking": { set_size: 100, universe_size: 25, density: 0.4, weights: "equal", seed: 1 },
   # "luna_hamiltoniancycle": { num_nodes: 6, edge_prob: 0.8, seed: 42 },
   # "luna_hamiltoniancycle": { num_nodes: 10, edge_prob: 0.8, seed: 42 },
   # "luna_minvertexcover": { num_nodes: 5, edge_prob: 0.5, seed: 42 , penalty: 8},
