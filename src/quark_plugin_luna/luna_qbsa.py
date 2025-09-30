@@ -13,6 +13,57 @@ from .utils import get_best_solution, get_model,  scale_sleep, get_runtime, get_
 
 @dataclass
 class LUNAQBSA(Core):
+    """
+    LUNAQBSA is a solver class implementing the QBSolv-like Simulated Annealing (QBSA) algorithm
+    provided by Luna Quantum. This approach is designed for decomposing large Quadratic Unconstrained
+    Binary Optimization (QUBO) problems into smaller subproblems that can be efficiently solved using
+    a simulated annealing method. The solver supports rolling decomposition, convergence criteria, and
+    flexible simulated annealing parameters.
+
+
+    Parameters
+    ----------
+    decomposer_size : int, default=50
+    The size of the subproblem into which the QUBO will be decomposed.
+    rolling : bool, default=True
+    Whether to use a rolling decomposition strategy.
+    rolling_history : float, default=0.15
+    Fraction of historical solutions to retain during rolling decomposition.
+    max_iter : Optional[int], default=100
+    Maximum number of iterations for the algorithm.
+    max_time : int, default=5
+    Maximum runtime (in seconds) for the solver.
+    convergence : int, default=3
+    Number of iterations without improvement before stopping early.
+    target : Optional[float], default=None
+    Target energy value to reach. The solver stops once the target is met.
+    rtol : float, default=1e-5
+    Relative tolerance used in convergence checks.
+    atol : float, default=1e-8
+    Absolute tolerance used in convergence checks.
+    sa_num_reads : Optional[int], default=None
+    Number of readouts (independent annealing runs).
+    sa_num_sweeps : int, default=1000
+    Number of sweeps (steps) per annealing run.
+    sa_beta_range : Optional[Tuple[float, float]], default=None
+    Range of inverse temperatures (beta) for simulated annealing.
+    sa_beta_schedule_type : {"linear", "geometric"}, default="geometric"
+    Type of beta schedule to use during annealing.
+    sa_initial_states_generator : {"none", "tile", "random"}, default="random"
+    Strategy for generating initial states in annealing runs.
+    backend : optional
+    Backend configuration for running the algorithm.
+
+
+    Notes
+    -----
+    - The QBSolv-like simulated annealing algorithm decomposes large QUBOs into smaller subproblems
+    and iteratively improves the global solution.
+    - For details on the algorithm, see:
+    https://docs.aqarios.com/algorithms/qbsolvlikesimulatedannealing/
+"""
+
+
     decomposer_size: int = 50
     rolling: bool = True
     rolling_history: float = 0.15

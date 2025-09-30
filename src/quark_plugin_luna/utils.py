@@ -23,12 +23,11 @@ def scale_sleep(model: Model):
     return sleep_params_copy
 
 def get_model(data:Qubo) -> Model:
-    print("matrix:\n", data.as_matrix())
     return QuboTranslator.to_aq(data.as_matrix())
 
 def get_best_solution(solution:Solution)->list:
     if solution is not None:
-        return dict(zip(solution.variable_names, list(solution.best().sample)))
+        return solution.best().sample.to_dict()
     else:
         return None
 

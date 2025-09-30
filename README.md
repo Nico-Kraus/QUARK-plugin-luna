@@ -31,10 +31,29 @@
 Luna Usecases provide an LP string, solveable directly by the scip solver or 
 transformable to qubo by the `lp_qubo_maping` module.
 This transformation will encode constraints as slack variables.
-Constraint conserving algorithms are `luna_scip`, `luna_leapcqm`, as well as `luna_flex` in a sense where
-constraints are encoded in a limited search space for QAOA.
+Constraint conserving algorithms are `luna_scip`, `luna_leapcqm`, as well as `luna_flex` and `luna_da` in a sense where
+constraints (one-hot and inequality) are preserverd.
 
 All module parameters are documented in detail within their respective `.py` files.
+
+Solvers: <br>
+qa - Quantum Annealing<br>
+qaoa - Quantum Approximate Optimization Algorithm<br>
+qaga - Genetic Algorithm enhanced with quantum annealing<br>
+qbqa - QPU-backed qbsolv-like decomposition<br>
+qpa - QPU-backed Population Annealing<br>
+rrqa - Repeated Reverse Quantum Annealing<br>
+leapbqm - D-Wave Leap's quantum-classical Hybrid BQM Solver<br>
+kerb - Kerberos hybrid quantum-classical optimization solver<br>
+sa - Simulated Annealing<br>
+saga - Simulated Annealing Genetic Algorithm<br>
+qbsa - QBSolv-like Simulated Annealing<br>
+rrsa - Repeated Reverse Simulated Annealing<br>
+pa - Population Annealing<br>
+flex_qaoa - FlexQAOA<br>
+leapcqm - D-Wave Leap’s quantum-classical Hybrid CQM solver<br>
+da - Fujitsu Digital Annealer<br>
+scip - Solve Constraint Integer Programming <br>
 
 <br>
 
@@ -56,7 +75,8 @@ All module parameters are documented in detail within their respective `.py` fil
 | luna_pa              | quark.interface_types.qubo | None                       | Classical
 | luna_flex_qaoa       | quark.interface_types.other (LP) | None                  | Quantum
 | luna_leapcqm         | quark.interface_types.other (LP) | None                  | Hybrid
-| luna_scip          | quark.interface_types.other (LP) | None                  | Classical
+| luna_da              | quark.interface_types.other (LP) | None                  | Classical
+| luna_scip            | quark.interface_types.other (LP) | None                  | Classical
 
 <br>
 
